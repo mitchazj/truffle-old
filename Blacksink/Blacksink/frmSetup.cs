@@ -80,7 +80,7 @@ namespace Blacksink
                     if (OnSetupFinished != null)
                         OnSetupFinished(new object(), new EventArgs());
 
-                    //Mike drop
+                    //Mic drop
                     this.Close();
                 } else {
                     MessageBox.Show("Selected folder must be empty.");
