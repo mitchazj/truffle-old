@@ -70,7 +70,8 @@ namespace Blacksink
                 }
                 if (Directory.GetFiles(txLocation.Text).Length == 0 && Directory.GetDirectories(txLocation.Text).Length == 0) {
                     //We are done! Save our configuration to settings
-                    Properties.Settings.Default.StorageLocation = txLocation.Text;
+                    string location = txLocation.Text.Replace("\\", "/");
+                    Properties.Settings.Default.StorageLocation = txLocation.Text.EndsWith("\\") ? txLocation.Text : txLocation.Text + "\\";
                     Properties.Settings.Default.StudentNumber = Security.EncryptString(textBox1.Text);
                     Properties.Settings.Default.StudentPassword = Security.EncryptString(textBox2.Text);
                     Properties.Settings.Default.is_setup = true;

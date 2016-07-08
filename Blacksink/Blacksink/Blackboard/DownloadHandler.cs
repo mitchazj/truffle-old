@@ -28,7 +28,7 @@ namespace Blacksink.Blackboard
                 using (callback) {
                     string directory = Properties.Settings.Default.StorageLocation + (GlobalVariables.CurrentUnitCode != "" ? GlobalVariables.CurrentUnitCode + "/" : "");
                     Directory.CreateDirectory(directory);
-                    
+
                     string filename = directory + downloadItem.SuggestedFileName;
                     if (!File.Exists(filename)) {
                         callback.Continue(filename, showDialog: false);

@@ -86,7 +86,7 @@ namespace Blacksink.Blackboard
         /// Whenever b_root finishes loading a page, we inject our JS.
         /// </summary>
         private void b_root_FrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
-            ThreadSafePageInject(e.Url.EndsWith(".pdf"));
+            ThreadSafePageInject(isSpecialConsideration(e.Url));
         }
 
         /// <summary>
@@ -263,6 +263,15 @@ namespace Blacksink.Blackboard
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        #endregion
+
+        #region Special Consideration Files
+        private bool isSpecialConsideration(string url) {
+            url = url.ToLower();
+            return url.EndsWith(".pdf") || url.EndsWith(".png") || url.EndsWith(".jpeg") || url.EndsWith(".jpg")
+                || url.EndsWith(".m3p") || url.EndsWith(".mp3") || url.EndsWith(".mp4") || url.EndsWith(".wav")
+                || url.EndsWith(".flac") || url.EndsWith(".midi");
+        }
         #endregion
     }
 }
