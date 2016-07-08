@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blacksink", "Blacksink\Blacksink.csproj", "{EBFA6155-4943-4B59-9820-1BE5A3D9C8B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Truffle", "Blacksink\Truffle.csproj", "{EBFA6155-4943-4B59-9820-1BE5A3D9C8B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

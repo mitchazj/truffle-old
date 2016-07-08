@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Blacksink</RootNamespace>
-    <AssemblyName>Blacksink</AssemblyName>
+    <AssemblyName>Truffle</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -72,7 +72,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>blacksink-text.ico</ApplicationIcon>
+    <ApplicationIcon>logo64.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -172,9 +172,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="blacksink-text.ico" />
+    <Content Include="logo64.ico" />
     <Content Include="Resources\black-sink-ok.ico" />
     <Content Include="Resources\black-sink-sync.ico" />
     <Content Include="Resources\blacksink-text-v.png" />
+    <None Include="Resources\mug_sync.ico" />
+    <None Include="Resources\mug_ok.ico" />
+    <None Include="Resources\mug_error.ico" />
+    <None Include="Resources\tall.png" />
+    <None Include="Resources\logo.png" />
     <None Include="Resources\GitHub-Mark.png" />
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,7 @@ namespace Blacksink
 
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-        private const string KeyName = "Black-Sink";
+        private const string KeyName = "TruffleMITCH";
         bool isRunningOnLogin;
         #endregion
 
@@ -72,14 +72,14 @@ namespace Blacksink
         }
 
         private void setupCompleted(object sender, EventArgs e) {
-            main_icon.ShowBalloonTip(5000, "Black-Sink will continue to run in the background", "We'll let you know when the new files have downloaded.", ToolTipIcon.Info);
+            main_icon.ShowBalloonTip(5000, "Truffle will continue to run in the background", "We'll let you know when the new files have downloaded.", ToolTipIcon.Info);
             tm_refresh_Tick(tm_refresh, new EventArgs()); //Start our first sync
         }
 
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
             if (GlobalVariables.FilesDownloaded != 0)
                 main_icon.ShowBalloonTip(5000, "Sync Completed", string.Format("{0} new files have been downloaded.", GlobalVariables.FilesDownloaded), ToolTipIcon.Info);
-            main_icon.Icon = icon.black_sink_ok;
+            main_icon.Icon = icon.mug_ok;
             is_crawling = false;
             Application.DoEvents();
         }
@@ -109,8 +109,8 @@ namespace Blacksink
         /// Places the Black-Sink icon in the Windows Task Tray
         /// </summary>
         private void setupIcon() {
-            main_icon.Text = "Black-Sink";
-            main_icon.Icon = icon.black_sink_ok;
+            main_icon.Text = "Truffle";
+            main_icon.Icon = icon.mug_ok;
             main_icon.ContextMenu = new ContextMenu();
             main_icon.ContextMenu.MenuItems.Add("Open units in File Explorer...", onOpenUnitsClicked);
             main_icon.ContextMenu.MenuItems.Add("-");
@@ -136,7 +136,7 @@ namespace Blacksink
             if (!is_crawling) {
                 Properties.Settings.Default.LastSyncTime = DateTime.Now;
                 Properties.Settings.Default.Save();
-                main_icon.Icon = icon.black_sink_sync;
+                main_icon.Icon = icon.mug_sync;
                 main_icon.Text = "Blackboard Sync in Progress...";
                 is_crawling = true;
                 crawler.Crawl();

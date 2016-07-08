@@ -185,7 +185,7 @@ namespace Blacksink
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            MessageBox.Show("Black-Sink needs your personal information to connect with Blackboard and access your units.\r\n\r\nWe promise not steal your info - Black-Sink encrypts it and keeps it exclusively on YOUR computer.");
+            MessageBox.Show("Black-Sink needs your personal information to connect with Blackboard and access your units.\r\n\r\nWe promise not steal your info - Truffle encrypts it and keeps it exclusively on YOUR computer.");
         }
 
         private void btnBrowse_Click(object sender, EventArgs e) {
