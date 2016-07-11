@@ -37,6 +37,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.lbStudentNumber = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lbHeader = new System.Windows.Forms.Label();
             this.lbSubheader = new System.Windows.Forms.Label();
             this.pnConnecting = new System.Windows.Forms.Panel();
@@ -44,22 +45,21 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.pnFileLocation = new System.Windows.Forms.Panel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txLocation = new System.Windows.Forms.TextBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pnBottom.SuspendLayout();
             this.pnContain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnConnecting.SuspendLayout();
             this.pnFileLocation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // pnDecorative
@@ -177,6 +177,17 @@
             this.textBox1.Size = new System.Drawing.Size(380, 20);
             this.textBox1.TabIndex = 19;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.pictureBox1.Image = global::Blacksink.Properties.Resources.tall;
+            this.pictureBox1.Location = new System.Drawing.Point(30, 28);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(167, 213);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 18;
+            this.pictureBox1.TabStop = false;
+            // 
             // lbHeader
             // 
             this.lbHeader.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -204,7 +215,7 @@
             this.pnConnecting.Controls.Add(this.prgConnect);
             this.pnConnecting.Controls.Add(this.label5);
             this.pnConnecting.Controls.Add(this.label6);
-            this.pnConnecting.Location = new System.Drawing.Point(0, -5000);
+            this.pnConnecting.Location = new System.Drawing.Point(0, 0);
             this.pnConnecting.Name = "pnConnecting";
             this.pnConnecting.Size = new System.Drawing.Size(643, 256);
             this.pnConnecting.TabIndex = 5;
@@ -251,11 +262,21 @@
             this.pnFileLocation.Controls.Add(this.pictureBox3);
             this.pnFileLocation.Controls.Add(this.label9);
             this.pnFileLocation.Controls.Add(this.label10);
-            this.pnFileLocation.Location = new System.Drawing.Point(0, -500);
+            this.pnFileLocation.Location = new System.Drawing.Point(0, 0);
             this.pnFileLocation.Name = "pnFileLocation";
             this.pnFileLocation.Size = new System.Drawing.Size(643, 256);
             this.pnFileLocation.TabIndex = 6;
             this.pnFileLocation.Visible = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::Blacksink.Properties.Resources.tick;
+            this.pictureBox2.Location = new System.Drawing.Point(221, 60);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(55, 50);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 23;
+            this.pictureBox2.TabStop = false;
             // 
             // label3
             // 
@@ -296,6 +317,17 @@
             this.txLocation.Size = new System.Drawing.Size(299, 20);
             this.txLocation.TabIndex = 19;
             // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.pictureBox3.Image = global::Blacksink.Properties.Resources.tall;
+            this.pictureBox3.Location = new System.Drawing.Point(30, 15);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(167, 226);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 18;
+            this.pictureBox3.TabStop = false;
+            // 
             // label9
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -318,38 +350,6 @@
             this.label10.TabIndex = 13;
             this.label10.Text = "Choose an empty folder, or leave this as default.";
             // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::Blacksink.Properties.Resources.tick;
-            this.pictureBox2.Location = new System.Drawing.Point(221, 60);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(55, 50);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 23;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.pictureBox3.Image = global::Blacksink.Properties.Resources.tall;
-            this.pictureBox3.Location = new System.Drawing.Point(30, 15);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(167, 226);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 18;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.pictureBox1.Image = global::Blacksink.Properties.Resources.tall;
-            this.pictureBox1.Location = new System.Drawing.Point(30, 28);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(167, 213);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 18;
-            this.pictureBox1.TabStop = false;
-            // 
             // frmSetup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -371,13 +371,13 @@
             this.pnBottom.PerformLayout();
             this.pnContain.ResumeLayout(false);
             this.pnContain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.pnConnecting.ResumeLayout(false);
             this.pnConnecting.PerformLayout();
             this.pnFileLocation.ResumeLayout(false);
             this.pnFileLocation.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }

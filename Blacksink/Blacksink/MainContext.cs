@@ -160,7 +160,10 @@ namespace Blacksink
         }
         private void onSyncNowClicked(object sender, EventArgs e) {
             Application.DoEvents();
-            Sync();
+            if (Properties.Settings.Default.is_setup)
+                Sync();
+            else
+                MessageBox.Show("Truffle isn't connected to your Blackboard account. Have you run the setup wizard?");
         }
         private void onSetupWizardClicked(object sender, EventArgs e) {
             frmSetup frm = new frmSetup();
