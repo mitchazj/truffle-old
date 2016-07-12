@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
-using CefSharp.OffScreen;
+using CefSharp.WinForms;
 using Newtonsoft.Json;
 using System.Threading;
 
@@ -26,15 +26,24 @@ namespace Blacksink.Blackboard
         DownloadHandler d_handler;
         public string current_unitcode = "";
         public string current_page = "";
+
+        int potentialLoginFails = 0;
+        const int potentialLoginFailsThreshold = 10;
         #endregion
 
         #region Events
         private delegate void OnCrawlRequestHandler(string url);
         private OnCrawlRequestHandler OnCrawlRequest;
-        private delegate void OnPageInjectHandler(bool is_pdf);
+        private delegate void OnPageInjectHandler(bool is_specialConsideration);
         private OnPageInjectHandler OnPageInject;
         public delegate void OnSyncCompletedHandler(object sender, EventArgs e);
         public event OnSyncCompletedHandler OnSyncCompleted;
+        public delegate void OnLoginSuccessHandler(object sender, EventArgs e);
+        public event OnLoginSuccessHandler OnLoginSuccess;
+        public delegate void OnLoginProblemHandler(object sender, EventArgs e);
+        public event OnLoginProblemHandler OnLoginProblem;
+        public delegate void OnConnectivityProblemHandler(object sender, EventArgs e);
+        public event OnConnectivityProblemHandler OnConnectivityProblem;
         #endregion
 
         #region Constructor
@@ -46,7 +55,7 @@ namespace Blacksink.Blackboard
             d_handler.DownloadHandled += D_handler_DownloadHandled;
 
             //Initialize the off-screen browser for crawling
-            b_root = new ChromiumWebBrowser();
+            b_root = new ChromiumWebBrowser("empty");
             b_root.BrowserSettings.ApplicationCache = CefState.Disabled; //Caching occasionally causes the crawler to miss new files
             b_root.BrowserSettings.ImageLoading = CefState.Disabled; //We don't want to waste our time/data with pictures :D
             b_root.DownloadHandler = d_handler;
@@ -86,7 +95,12 @@ namespace Blacksink.Blackboard
         /// Whenever b_root finishes loading a page, we inject our JS.
         /// </summary>
         private void b_root_FrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
-            ThreadSafePageInject(isSpecialConsideration(e.Url));
+            if (InternetConnectivity.IsConnectionAvailable()) {
+                ThreadSafePageInject(isSpecialConsideration(e.Url));
+            } else {
+                if (OnConnectivityProblem != null)
+                    OnConnectivityProblem(new object(), new EventArgs());
+            }
         }
 
         /// <summary>
@@ -111,6 +125,7 @@ namespace Blacksink.Blackboard
                 js_inject = Script.getScript(username, password);
 
                 //Reset variables
+                urls.Clear();
                 crawled_urls.Clear();
                 crawl_started = false;
 
@@ -201,16 +216,16 @@ namespace Blacksink.Blackboard
         /// <summary>
         /// Thread-safe JS injection
         /// </summary>
-        /// <param name="pdf">True if we are curently on a PDF file.</param>
-        public void ThreadSafePageInject(bool pdf) {
+        /// <param name="specialConsideration">True if we are curently on a Special Consideration file.</param>
+        public void ThreadSafePageInject(bool specialConsideration) {
             if (!InvokeRequired) {
-                if (!pdf)
+                if (!specialConsideration)
                     Inject(b_root);
                 else
-                    pdfInject(b_root);
+                    specialConsiderationInject(b_root);
             }
             else
-                this.Invoke(OnPageInject, pdf);
+                this.Invoke(OnPageInject, specialConsideration);
         }
 
         /// <summary>
@@ -225,6 +240,8 @@ namespace Blacksink.Blackboard
                     if (response.Success == true && response.Result != null) {
                         var result = response.Result.ToString();
                         if (result != string.Empty && result != "null" && result != "login successful" && result != "login unsuccessful") {
+                            potentialLoginFails = 0; //No need to worry :-)
+                            OnLoginSuccess?.Invoke(new object(), new EventArgs()); //Tell the main class it's all good
                             Dictionary<string, string> conversion = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
                             foreach (var pair in conversion) {
                                 int dummy = 0;
@@ -241,6 +258,17 @@ namespace Blacksink.Blackboard
                             }
                             if (urls.Count > 0)
                                 Continue();
+                        } else if (result == "login successful" || result == "login unsuccessful") {
+                            ++potentialLoginFails;
+                            if (potentialLoginFails > potentialLoginFailsThreshold) {
+                                //We might have a problem xD
+                                potentialLoginFails = 0;
+
+                                //Clear the rest of the work, fail gracefully
+                                urls.Clear();
+                                if (OnLoginProblem != null)
+                                    OnLoginProblem(new object(), new EventArgs());
+                            }
                         }
                     }
                 }
@@ -248,17 +276,18 @@ namespace Blacksink.Blackboard
         }
 
         /// <summary>
-        /// Forces PDF's to download immediately after they open in Adobe's chrome plugin.
+        /// Forces Special Consideration files to download immediately after they open in Adobe's chrome plugin.
         /// Ideally, I would disable the plugin - but for some reason doing this caused CefSharp to stall.
         /// If any CefSharp experts figure out a cleaner way to do this, let me know.
         /// </summary>
         /// <param name="b">The browser to inject into</param>
-        private void pdfInject(ChromiumWebBrowser b) {
+        private void specialConsiderationInject(ChromiumWebBrowser b) {
             string code = "document.body.innerHTML = \"<a id='d_link' href='" + current_page + "' download>Clickity</a>\"; document.querySelector('#d_link').click();";
             var task = b.EvaluateScriptAsync(code);
             task.ContinueWith(t => {
+                //For debug ouput when testing
                 if (!t.IsFaulted) {
-                    //Console.WriteLine("Switching on PDF @ " + current_page);
+                    //Console.WriteLine("Special Consideration @ " + current_page);
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }

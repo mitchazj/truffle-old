@@ -63,9 +63,9 @@ namespace Blacksink {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon black_sink_ok {
+        internal static System.Drawing.Icon mug_error {
             get {
-                object obj = ResourceManager.GetObject("black_sink_ok", resourceCulture);
+                object obj = ResourceManager.GetObject("mug_error", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Blacksink {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon black_sink_sync {
+        internal static System.Drawing.Icon mug_ok {
             get {
-                object obj = ResourceManager.GetObject("black_sink_sync", resourceCulture);
+                object obj = ResourceManager.GetObject("mug_ok", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace Blacksink {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon blacksink_white128 {
+        internal static System.Drawing.Icon mug_sync {
             get {
-                object obj = ResourceManager.GetObject("blacksink_white128", resourceCulture);
+                object obj = ResourceManager.GetObject("mug_sync", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

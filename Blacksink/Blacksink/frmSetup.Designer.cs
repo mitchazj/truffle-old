@@ -138,10 +138,10 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(224, 191);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(337, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(316, 13);
             this.linkLabel1.TabIndex = 23;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Why is this necessary? What does Black-Sink do with my information?";
+            this.linkLabel1.Text = "Why is this necessary? What does Truffle do with my information?";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label1
@@ -180,10 +180,10 @@
             // pictureBox1
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.pictureBox1.Image = global::Blacksink.Properties.Resources.blacksink_text;
-            this.pictureBox1.Location = new System.Drawing.Point(30, 15);
+            this.pictureBox1.Image = global::Blacksink.Properties.Resources.tall;
+            this.pictureBox1.Location = new System.Drawing.Point(30, 28);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(167, 226);
+            this.pictureBox1.Size = new System.Drawing.Size(167, 213);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 18;
             this.pictureBox1.TabStop = false;
@@ -196,9 +196,9 @@
             this.lbHeader.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(188)))));
             this.lbHeader.Location = new System.Drawing.Point(223, 68);
             this.lbHeader.Name = "lbHeader";
-            this.lbHeader.Size = new System.Drawing.Size(350, 20);
+            this.lbHeader.Size = new System.Drawing.Size(320, 20);
             this.lbHeader.TabIndex = 12;
-            this.lbHeader.Text = "Allow Black-Sink to access your student account";
+            this.lbHeader.Text = "Allow Truffle to access your student account";
             // 
             // lbSubheader
             // 
@@ -296,9 +296,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(278, 89);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(301, 13);
+            this.label4.Size = new System.Drawing.Size(280, 13);
             this.label4.TabIndex = 22;
-            this.label4.Text = "Black-Sink is now configured to use your Blackboard account.";
+            this.label4.Text = "Truffle is now configured to use your Blackboard account.";
             // 
             // btnBrowse
             // 
@@ -320,7 +320,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.pictureBox3.Image = global::Blacksink.Properties.Resources.blacksink_text;
+            this.pictureBox3.Image = global::Blacksink.Properties.Resources.tall;
             this.pictureBox3.Location = new System.Drawing.Point(30, 15);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(167, 226);
@@ -366,7 +366,7 @@
             this.MinimizeBox = false;
             this.Name = "frmSetup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Black-Sink Setup";
+            this.Text = "Truffle Setup";
             this.pnBottom.ResumeLayout(false);
             this.pnBottom.PerformLayout();
             this.pnContain.ResumeLayout(false);
