@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
-using CefSharp.OffScreen;
+using CefSharp.WinForms;
 using Newtonsoft.Json;
 using System.Threading;
 
@@ -55,7 +55,7 @@ namespace Blacksink.Blackboard
             d_handler.DownloadHandled += D_handler_DownloadHandled;
 
             //Initialize the off-screen browser for crawling
-            b_root = new ChromiumWebBrowser();
+            b_root = new ChromiumWebBrowser("empty");
             b_root.BrowserSettings.ApplicationCache = CefState.Disabled; //Caching occasionally causes the crawler to miss new files
             b_root.BrowserSettings.ImageLoading = CefState.Disabled; //We don't want to waste our time/data with pictures :D
             b_root.DownloadHandler = d_handler;

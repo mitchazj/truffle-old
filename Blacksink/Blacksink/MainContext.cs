@@ -95,7 +95,7 @@ namespace Blacksink
         }
 
         private void Crawler_OnConnectivityProblem(object sender, EventArgs e) {
-            main_icon.Icon = icon.mug_ok;
+            main_icon.Icon = icon.mug_error;
             main_icon.Text = "No Internet Connection";
             connectivity_issues = true;
             is_crawling = false;
@@ -140,6 +140,7 @@ namespace Blacksink
                 }
             }
             if (!is_crawling && active && (DateTime.Now - Properties.Settings.Default.LastSyncTime).TotalMilliseconds > 1000 * 60 * 60 * 3 /*3 hours*/) {
+                Console.WriteLine("Sync started fromm here.");
                 Sync();
             }
         }
@@ -174,7 +175,9 @@ namespace Blacksink
         /// Spiders new content from Blackboard.
         /// </summary>
         public void Sync() {
+            Console.WriteLine("Sync starting.");
             if (!is_crawling) {
+                Console.WriteLine("Sync starting - passed.");
                 main_icon.Icon = icon.mug_sync;
                 main_icon.Text = "Blackboard Sync in Progress...";
                 is_crawling = true;

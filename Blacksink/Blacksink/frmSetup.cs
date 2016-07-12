@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Blacksink.Blackboard;
-using CefSharp.OffScreen;
+using CefSharp.WinForms;
 using CefSharp;
 using Newtonsoft.Json;
 using System.IO;
@@ -31,7 +31,8 @@ namespace Blacksink
         public delegate void OnSetupFinishedHandler(object sender, EventArgs e);
         public event OnSetupFinishedHandler OnSetupFinished;
 
-        public Timer connectionTimeout = new Timer() { Interval = 1000 * 10 };
+        public Timer connectionTimeout = new Timer() { Interval = 100 };
+        public DateTime connection_started = DateTime.Now;
         bool allowedToContinue = true;
 
         public frmSetup() {
@@ -40,12 +41,31 @@ namespace Blacksink
             b_login.FrameLoadEnd += B_login_FrameLoadEnd;
             OnAct = Act;
             connectionTimeout.Tick += ConnectionTimeout_Tick;
+
+            Form test = new Form();
+            test.Controls.Add(b_login);
+            test.Show();
         }
 
         private void ConnectionTimeout_Tick(object sender, EventArgs e) {
-            allowedToContinue = false;
-            connectionTimeout.Stop();
-            Application.DoEvents();
+            if (DateTime.Now - connection_started > TimeSpan.FromSeconds(20)) {
+                allowedToContinue = false;
+                Console.WriteLine("Timer tick");
+                b_login.Stop();
+                connectionTimeout.Stop();
+                this.Invoke(OnAct, false);
+                MessageBox.Show("Timeout Error: Unable to connect to Blackboard. Please double-check your password and your internet connection", "Truffle");
+                Application.DoEvents();
+            }
+        }
+
+        private void StartTimeout() {
+            connection_started = DateTime.Now;
+            allowedToContinue = true;
+            if (!connectionTimeout.Enabled) {
+                connectionTimeout.Start();
+                Console.WriteLine("Timer started");
+            }
         }
 
         private void Next() {
@@ -54,10 +74,12 @@ namespace Blacksink
                 pnContain.Visible = false;
                 pnConnecting.Visible = true;
                 btnNext.Enabled = false;
+                allowedToContinue = true;
                 Login();
             }
             else if (Wizard_Position == 1) {
                 ++Wizard_Position;
+                connectionTimeout.Stop();
                 pnConnecting.Visible = false;
                 pnFileLocation.Visible = true;
                 btnNext.Enabled = true;
@@ -101,16 +123,18 @@ namespace Blacksink
 
         private void BackToStart() {
             Wizard_Position = 0;
+            allowedToContinue = false;
             failed_passes = 0;
             page_loaded = false;
             has_injected = false;
             first_step_passed = false;
             js_inject = "";
+            b_login.Stop();
             b_login.Load(URL);
             pnContain.Visible = true;
             pnConnecting.Visible = false;
             pnFileLocation.Visible = false;
-            allowedToContinue = true;
+            connectionTimeout.Stop();
             btnNext.Enabled = true;
             btnNext.Text = "Next";
         }
@@ -140,7 +164,7 @@ namespace Blacksink
                                 else {
                                     //Bother. There was an error inputting information.
                                     Application.DoEvents();
-                                    MessageBox.Show("Could not connect to Blackboard.");
+                                    MessageBox.Show("Could not connect to Blackboard.", "Truffle");
                                     this.Invoke(OnAct, false);
                                 }
                             }
@@ -151,7 +175,7 @@ namespace Blacksink
                                     if (result == "login successful" || result == "login unsuccessful") {
                                         //Uh-oh. We should be well past this stage. Abort, abort!
                                         Application.DoEvents();
-                                        MessageBox.Show("Invalid Username/Password");
+                                        MessageBox.Show("Invalid Username/Password", "Truffle");
                                         this.Invoke(OnAct, false);
                                     }
                                     else {
@@ -165,16 +189,12 @@ namespace Blacksink
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
-            else {
-                //Timeout error.
-                Application.DoEvents();
-                MessageBox.Show("Timeout Error: Unable to connect to Blackboard. Please double-check your password.", "Truffle");
-                this.Invoke(OnAct, false);
-            }
         }
 
         private void Login() {
             js_inject = Script.getScript(textBox1.Text, textBox2.Text);
+            StartTimeout();
+            Console.WriteLine("Login called");
             if (page_loaded) {
                 Application.DoEvents();
                 Inject();
@@ -183,6 +203,7 @@ namespace Blacksink
 
         private void B_login_FrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
             page_loaded = true;
+            Console.WriteLine("Hello from the other side!");
             if (Wizard_Position == 1 && !has_injected) {
                 //User is waiting for us.
                 Login();
@@ -191,7 +212,7 @@ namespace Blacksink
                 try {
                     Inject();
                 }
-                catch { MessageBox.Show("Unexpected Error Occurred :-/"); /*Meh. Better safe than sorry.*/ }
+                catch { MessageBox.Show("Unexpected Error Occurred :-/", "Truffle"); /*Meh. Better safe than sorry.*/ }
             }
         }
 
@@ -205,13 +226,14 @@ namespace Blacksink
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            MessageBox.Show("Truffle needs your personal information to connect with Blackboard and access your units.\r\n\r\nWe promise not steal your info - Truffle encrypts it and keeps it exclusively on YOUR computer.");
+            MessageBox.Show("Truffle needs your personal information to connect with Blackboard and access your units.\r\n\r\nWe promise not steal your info - Truffle encrypts it and keeps it exclusively on YOUR computer.", "Truffle");
         }
 
         private void btnBrowse_Click(object sender, EventArgs e) {
             FolderBrowserDialog dlg = new FolderBrowserDialog();
             if (dlg.ShowDialog() == DialogResult.OK) {
                 txLocation.Text = dlg.SelectedPath;
+                txLocation.Text = txLocation.Text.EndsWith("\\") ? txLocation.Text : txLocation.Text + "\\";
             }
         }
     }
