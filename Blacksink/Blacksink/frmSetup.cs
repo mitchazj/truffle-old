@@ -56,10 +56,10 @@ namespace Blacksink
                     if (Properties.Settings.Default.StorageLocation != "") {
                         txLocation.Text = Properties.Settings.Default.StorageLocation;
                     } else {
-                        txLocation.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Blacksink\\QUT\\Units\\";
+                        txLocation.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Truffle\\QUT\\Units\\";
                     }
                 }
-                catch { txLocation.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Blacksink\\QUT\\Units\\"; }
+                catch { txLocation.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Truffle\\QUT\\Units\\"; }
             }
             else if (Wizard_Position == 2) {
                 try {

@@ -80,6 +80,7 @@ namespace Blacksink
             if (GlobalVariables.FilesDownloaded != 0)
                 main_icon.ShowBalloonTip(5000, "Sync Completed", string.Format("{0} new files have been downloaded.", GlobalVariables.FilesDownloaded), ToolTipIcon.Info);
             main_icon.Icon = icon.mug_ok;
+            main_icon.Text = "Last Synchronized " + DateTime.Now.ToString("t");
             is_crawling = false;
             Application.DoEvents();
         }
