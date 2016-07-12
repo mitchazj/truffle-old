@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
-using CefSharp.WinForms;
+using CefSharp.OffScreen;
 using Newtonsoft.Json;
 using System.Threading;
 
@@ -28,7 +28,7 @@ namespace Blacksink.Blackboard
         public string current_page = "";
 
         int potentialLoginFails = 0;
-        const int potentialLoginFailsThreshold = 10;
+        const int potentialLoginFailsThreshold = 2;
         #endregion
 
         #region Events
@@ -55,7 +55,7 @@ namespace Blacksink.Blackboard
             d_handler.DownloadHandled += D_handler_DownloadHandled;
 
             //Initialize the off-screen browser for crawling
-            b_root = new ChromiumWebBrowser("empty");
+            b_root = new ChromiumWebBrowser();
             b_root.BrowserSettings.ApplicationCache = CefState.Disabled; //Caching occasionally causes the crawler to miss new files
             b_root.BrowserSettings.ImageLoading = CefState.Disabled; //We don't want to waste our time/data with pictures :D
             b_root.DownloadHandler = d_handler;
@@ -173,34 +173,41 @@ namespace Blacksink.Blackboard
         private void Follow() {
             //As long as there are unscanned URLs, keep crawling.
             while (urls.Count > 0) {
-                //Get the URL at index 0 and work with it.
-                CrawlableURL curl = urls[0];
-                string url = curl.URL;
-                url = url.Contains("http") ? url : "https://blackboard.qut.edu.au/" + url;
+                if (urls[0] != null) {
+                    //Get the URL at index 0 and work with it.
+                    CrawlableURL curl = urls[0];
+                    string url = curl.URL;
+                    url = url.Contains("http") ? url : "https://blackboard.qut.edu.au/" + url;
 
-                //Remove it, allowing the next URL in the list to fall into place for next time.
-                urls.RemoveAt(0);
+                    //Remove it, allowing the next URL in the list to fall into place for next time.
+                    urls.RemoveAt(0);
 
-                //Make sure we don't unnecessarily re-crawl URLs.
-                if (!crawled_urls.Contains(url) && !Unit.IsFilePreviouslyDownloaded(url)) {
-                    //Update context for this page
-                    current_unitcode = curl.UnitCode;
-                    GlobalVariables.CurrentUnitCode = current_unitcode;
-                    GlobalVariables.CurrentUrl = url;
-                    current_page = url;
+                    //Make sure we don't unnecessarily re-crawl URLs.
+                    if (!crawled_urls.Contains(url) && !Unit.IsFilePreviouslyDownloaded(url)) {
+                        //Update context for this page
+                        current_unitcode = curl.UnitCode;
+                        GlobalVariables.CurrentUnitCode = current_unitcode;
+                        GlobalVariables.CurrentUrl = url;
+                        current_page = url;
 
-                    //Load this URL and extract data
-                    ThreadSafeCrawlRequest(url);
+                        //Load this URL and extract data
+                        ThreadSafeCrawlRequest(url);
 
-                    //Mark this URL as crawled.
-                    crawled_urls.Add(url);
+                        //Mark this URL as crawled.
+                        crawled_urls.Add(url);
 
-                    //Wait for "Continue()"
-                    safe_to_continue = false;
-                    while (!safe_to_continue)
-                        Thread.Sleep(100);
-                } else {
-                    //Console.WriteLine("[Skipped] : " + url);
+                        //Wait for "Continue()"
+                        safe_to_continue = false;
+                        while (!safe_to_continue)
+                            Thread.Sleep(100);
+                    }
+                    else {
+                        //Console.WriteLine("[Skipped] : " + url);
+                    }
+                }
+                else {
+                    //Blackboard Weirdness
+                    urls.RemoveAt(0);
                 }
             }
 

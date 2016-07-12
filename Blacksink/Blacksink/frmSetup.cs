@@ -8,13 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Blacksink.Blackboard;
-using CefSharp.WinForms;
+using CefSharp.OffScreen;
 using CefSharp;
 using Newtonsoft.Json;
 using System.IO;
 
 namespace Blacksink
 {
+    /// <summary>
+    /// This form handles the inital connection to Blackboard.
+    /// It currently contains the most fool-proof (albeit in bad need of refactoring) login code.
+    /// TODO: refactor this into a few different classes (priority urgent)
+    /// </summary>
     public partial class frmSetup : Form
     {
         int Wizard_Position = 0;
@@ -42,9 +47,9 @@ namespace Blacksink
             OnAct = Act;
             connectionTimeout.Tick += ConnectionTimeout_Tick;
 
-            Form test = new Form();
-            test.Controls.Add(b_login);
-            test.Show();
+            //Form test = new Form();
+            //test.Controls.Add(b_login);
+            //test.Show();
         }
 
         private void ConnectionTimeout_Tick(object sender, EventArgs e) {

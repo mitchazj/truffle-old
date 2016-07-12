@@ -19,7 +19,7 @@ namespace Blacksink
         //For the crawling :P
         Crawler crawler = new Crawler();
         //Check if it's time to update.
-        Timer tm_refresh = new Timer() { Interval = 1000 * 60 };
+        Timer tm_refresh = new Timer() { Interval = 1000 * 10 };
 
         bool is_crawling = false;
         bool connectivity_issues = false;
@@ -82,7 +82,9 @@ namespace Blacksink
         }
 
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
+            Console.WriteLine("[Received] Sync Completed");
             if (!login_issues && !connectivity_issues) {
+                Console.WriteLine("[Received][Passed] Sync Completed");
                 if (GlobalVariables.FilesDownloaded != 0)
                     main_icon.ShowBalloonTip(5000, "Sync Completed", string.Format("{0} new files have been downloaded.", GlobalVariables.FilesDownloaded), ToolTipIcon.Info);
                 main_icon.Icon = icon.mug_ok;
@@ -95,6 +97,7 @@ namespace Blacksink
         }
 
         private void Crawler_OnConnectivityProblem(object sender, EventArgs e) {
+            Console.WriteLine("[Received] Internet Problem");
             main_icon.Icon = icon.mug_error;
             main_icon.Text = "No Internet Connection";
             connectivity_issues = true;
@@ -103,6 +106,7 @@ namespace Blacksink
         }
 
         private void Crawler_OnLoginProblem(object sender, EventArgs e) {
+            Console.WriteLine("[Received] Login Problem");
             main_icon.Icon = icon.mug_error;
             main_icon.Text = "Login Problem - Please Update Your Password.";
             login_issues = true;
@@ -111,7 +115,10 @@ namespace Blacksink
         }
 
         private void Crawler_OnLoginSuccess(object sender, EventArgs e) {
+            login_issues = false;
             if (login_issues && !is_crawling) {
+                //Basically, there were login issues, but they've been resolved now.
+                Console.WriteLine("Login Success - right here");
                 main_icon.Icon = icon.mug_ok;
                 main_icon.Text = "Last Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
                 Application.DoEvents();
@@ -132,13 +139,23 @@ namespace Blacksink
         #region Refreshing
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
-            if (connectivity_issues) {
-                if (InternetConnectivity.IsConnectionAvailable()) {
+            if (InternetConnectivity.IsConnectionAvailable() && InternetConnectivity.strongInternetConnectionTest()) {
+                Console.WriteLine("Working Internet Connection - Timer Check");
+                if (connectivity_issues && !is_crawling) {
+                    connectivity_issues = false;
                     main_icon.Icon = icon.mug_ok;
                     main_icon.Text = "Last Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
                     Application.DoEvents();
                 }
+            } else {
+                Console.WriteLine("No Connection - Timer Check");
+                main_icon.Icon = icon.mug_error;
+                main_icon.Text = "No Internet Connection";
+                connectivity_issues = true;
+                is_crawling = false;
+                Application.DoEvents();
             }
+
             if (!is_crawling && active && (DateTime.Now - Properties.Settings.Default.LastSyncTime).TotalMilliseconds > 1000 * 60 * 60 * 3 /*3 hours*/) {
                 Console.WriteLine("Sync started fromm here.");
                 Sync();
@@ -175,13 +192,22 @@ namespace Blacksink
         /// Spiders new content from Blackboard.
         /// </summary>
         public void Sync() {
-            Console.WriteLine("Sync starting.");
-            if (!is_crawling) {
-                Console.WriteLine("Sync starting - passed.");
-                main_icon.Icon = icon.mug_sync;
-                main_icon.Text = "Blackboard Sync in Progress...";
-                is_crawling = true;
-                crawler.Crawl();
+            Console.WriteLine("Sync called.");
+            if (!is_crawling && !connectivity_issues && !login_issues) {
+                try {
+                    Console.WriteLine("Sync starting - passed.");
+                    main_icon.Icon = icon.mug_sync;
+                    main_icon.Text = "Blackboard Sync in Progress...";
+                    is_crawling = true;
+                    crawler.Crawl();
+                } catch {
+                    //I once had an unreproducible error here. This code is for safeguarding :P
+                    main_icon.Icon = icon.mug_error;
+                    main_icon.Text = "Temporary Configuration Problem";
+                    is_crawling = false;
+                }
+            } else {
+                Console.WriteLine("Sync rejected due to unresolved issues. Scanner has not been started.");
             }
         }
         #endregion
