@@ -31,11 +31,21 @@ namespace Blacksink
         public delegate void OnSetupFinishedHandler(object sender, EventArgs e);
         public event OnSetupFinishedHandler OnSetupFinished;
 
+        public Timer connectionTimeout = new Timer() { Interval = 1000 * 10 };
+        bool allowedToContinue = true;
+
         public frmSetup() {
             InitializeComponent();
             b_login = new ChromiumWebBrowser(URL);
             b_login.FrameLoadEnd += B_login_FrameLoadEnd;
             OnAct = Act;
+            connectionTimeout.Tick += ConnectionTimeout_Tick;
+        }
+
+        private void ConnectionTimeout_Tick(object sender, EventArgs e) {
+            allowedToContinue = false;
+            connectionTimeout.Stop();
+            Application.DoEvents();
         }
 
         private void Next() {
@@ -100,6 +110,7 @@ namespace Blacksink
             pnContain.Visible = true;
             pnConnecting.Visible = false;
             pnFileLocation.Visible = false;
+            allowedToContinue = true;
             btnNext.Enabled = true;
             btnNext.Text = "Next";
         }
@@ -112,45 +123,54 @@ namespace Blacksink
         }
 
         private void Inject() {
-            var task = b_login.EvaluateScriptAsync(js_inject);
-            Application.DoEvents();
-            task.ContinueWith(t => {
-                if (!t.IsFaulted) {
-                    var response = t.Result;
-                    if (response.Success == true && response.Result != null) {
-                        var result = response.Result.ToString();
-                        if (!first_step_passed) {
-                            if (result == "login successful") {
-                                //Awesome! We're in.
-                                Application.DoEvents();
-                                first_step_passed = true;
-                            }
-                            else {
-                                //Bother. There was an error inputting information.
-                                Application.DoEvents();
-                                MessageBox.Show("Could not connect to Blackboard.");
-                                this.Invoke(OnAct, false);
-                            }
-                        } else {
-                            Application.DoEvents();
-                            ++failed_passes;
-                            if (failed_passes == 2) {
-                                if (result == "login successful" || result == "login unsuccessful") {
-                                    //Uh-oh. We should be well past this stage. Abort, abort!
+            if (allowedToContinue) {
+                var task = b_login.EvaluateScriptAsync(js_inject);
+                Application.DoEvents();
+                task.ContinueWith(t => {
+                    if (!t.IsFaulted) {
+                        var response = t.Result;
+                        if (response.Success == true && response.Result != null) {
+                            var result = response.Result.ToString();
+                            if (!first_step_passed) {
+                                if (result == "login successful") {
+                                    //Awesome! We're in.
                                     Application.DoEvents();
-                                    MessageBox.Show("Invalid Username/Password");
-                                    this.Invoke(OnAct, false);
+                                    first_step_passed = true;
                                 }
                                 else {
-                                    //Success! Moving right along to the next slide.
+                                    //Bother. There was an error inputting information.
                                     Application.DoEvents();
-                                    this.Invoke(OnAct, true);
+                                    MessageBox.Show("Could not connect to Blackboard.");
+                                    this.Invoke(OnAct, false);
+                                }
+                            }
+                            else {
+                                Application.DoEvents();
+                                ++failed_passes;
+                                if (failed_passes == 2) {
+                                    if (result == "login successful" || result == "login unsuccessful") {
+                                        //Uh-oh. We should be well past this stage. Abort, abort!
+                                        Application.DoEvents();
+                                        MessageBox.Show("Invalid Username/Password");
+                                        this.Invoke(OnAct, false);
+                                    }
+                                    else {
+                                        //Success! Moving right along to the next slide.
+                                        Application.DoEvents();
+                                        this.Invoke(OnAct, true);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            else {
+                //Timeout error.
+                Application.DoEvents();
+                MessageBox.Show("Timeout Error: Unable to connect to Blackboard. Please double-check your password.", "Truffle");
+                this.Invoke(OnAct, false);
+            }
         }
 
         private void Login() {

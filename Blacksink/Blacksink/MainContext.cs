@@ -22,6 +22,8 @@ namespace Blacksink
         Timer tm_refresh = new Timer() { Interval = 1000 * 60 };
 
         bool is_crawling = false;
+        bool connectivity_issues = false;
+        bool login_issues = false;
 
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -65,6 +67,9 @@ namespace Blacksink
             }
 
             crawler.OnSyncCompleted += Crawler_OnSyncCompleted;
+            crawler.OnLoginProblem += Crawler_OnLoginProblem;
+            crawler.OnLoginSuccess += Crawler_OnLoginSuccess;
+            crawler.OnConnectivityProblem += Crawler_OnConnectivityProblem;
 
             tm_refresh.Tick += tm_refresh_Tick;
             tm_refresh_Tick(tm_refresh, new EventArgs()); //Fire the first event
@@ -77,12 +82,40 @@ namespace Blacksink
         }
 
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
-            if (GlobalVariables.FilesDownloaded != 0)
-                main_icon.ShowBalloonTip(5000, "Sync Completed", string.Format("{0} new files have been downloaded.", GlobalVariables.FilesDownloaded), ToolTipIcon.Info);
+            if (!login_issues && !connectivity_issues) {
+                if (GlobalVariables.FilesDownloaded != 0)
+                    main_icon.ShowBalloonTip(5000, "Sync Completed", string.Format("{0} new files have been downloaded.", GlobalVariables.FilesDownloaded), ToolTipIcon.Info);
+                main_icon.Icon = icon.mug_ok;
+                Properties.Settings.Default.LastSyncTime = DateTime.Now;
+                Properties.Settings.Default.Save();
+                main_icon.Text = "Last Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
+                is_crawling = false;
+                Application.DoEvents();
+            }
+        }
+
+        private void Crawler_OnConnectivityProblem(object sender, EventArgs e) {
             main_icon.Icon = icon.mug_ok;
-            main_icon.Text = "Last Synchronized " + DateTime.Now.ToString("t");
+            main_icon.Text = "No Internet Connection";
+            connectivity_issues = true;
             is_crawling = false;
             Application.DoEvents();
+        }
+
+        private void Crawler_OnLoginProblem(object sender, EventArgs e) {
+            main_icon.Icon = icon.mug_error;
+            main_icon.Text = "Login Problem - Please Update Your Password.";
+            login_issues = true;
+            is_crawling = false;
+            Application.DoEvents();
+        }
+
+        private void Crawler_OnLoginSuccess(object sender, EventArgs e) {
+            if (login_issues && !is_crawling) {
+                main_icon.Icon = icon.mug_ok;
+                main_icon.Text = "Last Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
+                Application.DoEvents();
+            }
         }
 
         #region Overrides
@@ -99,6 +132,13 @@ namespace Blacksink
         #region Refreshing
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
+            if (connectivity_issues) {
+                if (InternetConnectivity.IsConnectionAvailable()) {
+                    main_icon.Icon = icon.mug_ok;
+                    main_icon.Text = "Last Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
+                    Application.DoEvents();
+                }
+            }
             if (!is_crawling && active && (DateTime.Now - Properties.Settings.Default.LastSyncTime).TotalMilliseconds > 1000 * 60 * 60 * 3 /*3 hours*/) {
                 Sync();
             }
@@ -135,8 +175,6 @@ namespace Blacksink
         /// </summary>
         public void Sync() {
             if (!is_crawling) {
-                Properties.Settings.Default.LastSyncTime = DateTime.Now;
-                Properties.Settings.Default.Save();
                 main_icon.Icon = icon.mug_sync;
                 main_icon.Text = "Blackboard Sync in Progress...";
                 is_crawling = true;

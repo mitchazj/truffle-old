@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Blackboard\DownloadHandler.cs" />
     <Compile Include="Blackboard\BlackboardFile.cs" />
+    <Compile Include="Blackboard\InternetConnectivity.cs" />
     <Compile Include="Blackboard\JsDialogHandler.cs" />
     <Compile Include="Blackboard\Script.cs" />
     <Compile Include="Blackboard\Unit.cs" />
