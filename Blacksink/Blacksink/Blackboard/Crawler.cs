@@ -29,6 +29,7 @@ namespace Blacksink.Blackboard
 
         int potentialLoginFails = 0;
         const int potentialLoginFailsThreshold = 2;
+        bool emergency_stop = false;
         #endregion
 
         #region Events
@@ -55,7 +56,7 @@ namespace Blacksink.Blackboard
             d_handler.DownloadHandled += D_handler_DownloadHandled;
 
             //Initialize the off-screen browser for crawling
-            b_root = new ChromiumWebBrowser();
+            b_root = new ChromiumWebBrowser("local");
             b_root.BrowserSettings.ApplicationCache = CefState.Disabled; //Caching occasionally causes the crawler to miss new files
             b_root.BrowserSettings.ImageLoading = CefState.Disabled; //We don't want to waste our time/data with pictures :D
             b_root.DownloadHandler = d_handler;
@@ -65,6 +66,10 @@ namespace Blacksink.Blackboard
 
             this.CreateHandle();
             Application.DoEvents();
+
+            //Form test = new Form();
+            //test.Controls.Add(b_root);
+            //test.Show();
         }
         #endregion
 
@@ -126,6 +131,7 @@ namespace Blacksink.Blackboard
 
                 //Reset variables
                 crawled_urls.Clear();
+                emergency_stop = false;
                 crawl_started = false;
 
                 //Begin crawl.
@@ -171,7 +177,7 @@ namespace Blacksink.Blackboard
         /// </summary>
         private void Follow() {
             //As long as there are unscanned URLs, keep crawling.
-            while (urls.Count > 0) {
+            while (urls.Count > 0 && !emergency_stop) {
                 if (urls[0] != null) {
                     //Get the URL at index 0 and work with it.
                     CrawlableURL curl = urls[0];
@@ -211,8 +217,10 @@ namespace Blacksink.Blackboard
             }
 
             //We've finished crawling Blackboard. High fives all round.
-            this.Invoke(OnSyncCompleted, new object(), new EventArgs());
+            if (!emergency_stop)
+                this.Invoke(OnSyncCompleted, new object(), new EventArgs());
             Console.WriteLine("[* Completed] " + crawled_urls.Count + " pages crawled in " + (DateTime.Now - crawl_start).TotalMinutes + " minutes");
+            emergency_stop = false;
         }
 
         #endregion
@@ -239,43 +247,49 @@ namespace Blacksink.Blackboard
         /// </summary>
         /// <param name="b">The ChromimumWebBrowser to inject into.</param>
         private void Inject(ChromiumWebBrowser b) {
-            var task = b.EvaluateScriptAsync(js_inject);
-            task.ContinueWith(t => {
-                if (!t.IsFaulted) {
-                    var response = t.Result;
-                    if (response.Success == true && response.Result != null) {
-                        var result = response.Result.ToString();
-                        if (result != string.Empty && result != "null" && result != "login successful" && result != "login unsuccessful") {
-                            potentialLoginFails = 0; //No need to worry :-)
-                            OnLoginSuccess?.Invoke(new object(), new EventArgs()); //Tell the main class it's all good
-                            Dictionary<string, string> conversion = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
-                            foreach (var pair in conversion) {
-                                int dummy = 0;
-                                if (int.TryParse(pair.Key, out dummy)) {
-                                    urls.Add(new CrawlableURL(current_unitcode, pair.Value));
-                                    //Console.WriteLine("[* Discovered] [" + current_unitcode + "] " + pair.Value);
+            if (!emergency_stop) {
+                //All clear. 99.99% of the time the above doesn't matter.
+                var task = b.EvaluateScriptAsync(js_inject);
+                task.ContinueWith(t => {
+                    if (!t.IsFaulted) {
+                        var response = t.Result;
+                        if (response.Success == true && response.Result != null) {
+                            var result = response.Result.ToString();
+                            if (result != string.Empty && result != "null" && result != "login successful" && result != "login unsuccessful") {
+                                potentialLoginFails = 0; //No need to worry :-)
+                                OnLoginSuccess?.Invoke(new object(), new EventArgs()); //Tell the main class it's all good
+                                Dictionary<string, string> conversion = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+                                foreach (var pair in conversion) {
+                                    int dummy = 0;
+                                    if (int.TryParse(pair.Key, out dummy)) {
+                                        urls.Add(new CrawlableURL(current_unitcode, pair.Value));
+                                        //Console.WriteLine("[* Discovered] [" + current_unitcode + "] " + pair.Value);
+                                    }
+                                    else {
+                                        string u_code = pair.Key.Substring(0, 6);
+                                        urls.Add(new CrawlableURL(u_code, pair.Value));
+                                        Unit.EnsureExists(new Unit(u_code, pair.Value));
+                                        //Console.WriteLine("[* Discovered] [" + pair.Key.Substring(0, 6) + "] " + pair.Value);
+                                    }
                                 }
-                                else {
-                                    string u_code = pair.Key.Substring(0, 6);
-                                    urls.Add(new CrawlableURL(u_code, pair.Value));
-                                    Unit.EnsureExists(new Unit(u_code, pair.Value));
-                                    //Console.WriteLine("[* Discovered] [" + pair.Key.Substring(0, 6) + "] " + pair.Value);
-                                }
+                                if (urls.Count > 0)
+                                    Continue();
                             }
-                            if (urls.Count > 0)
-                                Continue();
-                        } else if (result == "login successful" || result == "login unsuccessful") {
-                            ++potentialLoginFails;
-                            if (potentialLoginFails > potentialLoginFailsThreshold) {
-                                //We might have a problem xD
-                                potentialLoginFails = 0;
-                                if (OnLoginProblem != null)
-                                    OnLoginProblem(new object(), new EventArgs());
+                            else if (result == "login successful" || result == "login unsuccessful") {
+                                ++potentialLoginFails;
+                                if (potentialLoginFails > potentialLoginFailsThreshold) {
+                                    //We might have a problem xD
+                                    emergency_stop = true;
+                                    b_root.Load("local"); //Park until everything is sorted out.
+                                    potentialLoginFails = 0;
+                                    if (OnLoginProblem != null)
+                                        OnLoginProblem(new object(), new EventArgs());
+                                }
                             }
                         }
                     }
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         /// <summary>

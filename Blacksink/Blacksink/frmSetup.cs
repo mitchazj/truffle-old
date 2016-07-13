@@ -105,10 +105,17 @@ namespace Blacksink
                     MessageBox.Show("Invalid folder path, or permission to access was denied.");
                     return;
                 }
-                if (Directory.GetFiles(txLocation.Text).Length == 0 && Directory.GetDirectories(txLocation.Text).Length == 0) {
+
+                //Parse the location
+                string location = txLocation.Text.Replace("/", "\\");
+                location = location.EndsWith("\\") ? location : location + "\\";
+
+                //It can be either where are files are already stored, or an empty directory.
+                if (Properties.Settings.Default.StorageLocation == location ||
+                    (Directory.GetFiles(location).Length == 0 && Directory.GetDirectories(location).Length == 0)) {
+
                     //We are done! Save our configuration to settings
-                    string location = txLocation.Text.Replace("\\", "/");
-                    Properties.Settings.Default.StorageLocation = txLocation.Text.EndsWith("\\") ? txLocation.Text : txLocation.Text + "\\";
+                    Properties.Settings.Default.StorageLocation = location;
                     Properties.Settings.Default.StudentNumber = Security.EncryptString(textBox1.Text);
                     Properties.Settings.Default.StudentPassword = Security.EncryptString(textBox2.Text);
                     Properties.Settings.Default.is_setup = true;
@@ -122,6 +129,7 @@ namespace Blacksink
                     this.Close();
                 } else {
                     MessageBox.Show("Selected folder must be empty.");
+                    MessageBox.Show(Properties.Settings.Default.StorageLocation);
                 }
             }
         }
