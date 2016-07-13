@@ -125,7 +125,6 @@ namespace Blacksink.Blackboard
                 js_inject = Script.getScript(username, password);
 
                 //Reset variables
-                urls.Clear();
                 crawled_urls.Clear();
                 crawl_started = false;
 
@@ -270,9 +269,6 @@ namespace Blacksink.Blackboard
                             if (potentialLoginFails > potentialLoginFailsThreshold) {
                                 //We might have a problem xD
                                 potentialLoginFails = 0;
-
-                                //Clear the rest of the work, fail gracefully
-                                urls.Clear();
                                 if (OnLoginProblem != null)
                                     OnLoginProblem(new object(), new EventArgs());
                             }

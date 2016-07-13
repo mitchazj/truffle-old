@@ -24,6 +24,7 @@ namespace Blacksink
         bool is_crawling = false;
         bool connectivity_issues = false;
         bool login_issues = false;
+        int conn_test_counter = 0;
 
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -139,8 +140,7 @@ namespace Blacksink
         #region Refreshing
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
-            if (InternetConnectivity.IsConnectionAvailable() && InternetConnectivity.strongInternetConnectionTest()) {
-                Console.WriteLine("Working Internet Connection - Timer Check");
+            if (checkInternet()) {
                 if (connectivity_issues && !is_crawling) {
                     connectivity_issues = false;
                     main_icon.Icon = icon.mug_ok;
@@ -148,7 +148,6 @@ namespace Blacksink
                     Application.DoEvents();
                 }
             } else {
-                Console.WriteLine("No Connection - Timer Check");
                 main_icon.Icon = icon.mug_error;
                 main_icon.Text = "No Internet Connection";
                 connectivity_issues = true;
@@ -159,6 +158,45 @@ namespace Blacksink
             if (!is_crawling && active && (DateTime.Now - Properties.Settings.Default.LastSyncTime).TotalMilliseconds > 1000 * 60 * 60 * 3 /*3 hours*/) {
                 Console.WriteLine("Sync started fromm here.");
                 Sync();
+            }
+        }
+
+        /// <summary>
+        /// Algorithm to check internet connection.
+        /// [Level 0] If the system reports no cable/wifi connection, there is no connection
+        /// [Level 1] If the system reports cable/wifi, we can assume there is a connection for now
+        /// [Level 2] If the system reports cable/wifi, but a Google ping failed to work, we'll hope for the best and give it one more shot
+        /// [Level 3] Failed twice or more, so there is no connection because something's broken.
+        /// </summary>
+        /// <returns></returns>
+        private bool checkInternet() {
+            if (InternetConnectivity.IsConnectionAvailable()) {
+                ++conn_test_counter;
+                if (conn_test_counter == 4) {
+                    conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
+                    Console.WriteLine("[Level 2] Working Internet Connection - Timer Check");
+                    return true;
+                } else if (conn_test_counter > 4) {
+                    conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
+                    if (conn_test_counter > 5) {
+                        conn_test_counter = 0;
+                        Console.WriteLine("[Level 3] No Internet Connection - Timer Check");
+                        return false;
+                    }
+                    else {
+                        //Let's give it one more shot
+                        Console.WriteLine("[Level 2] Working Internet Connection - Timer Check");
+                        return true;
+                    }
+                } else {
+                    Console.WriteLine("[Level 1] Working Internet Connection - Timer Check");
+                    return true;
+                }
+            }
+            else {
+                Console.WriteLine("[Level 0] No Connection - Timer Check");
+                conn_test_counter = 0;
+                return false;
             }
         }
         #endregion
