@@ -8,13 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Blacksink.Blackboard;
-using CefSharp.WinForms;
+using CefSharp.OffScreen;
 using CefSharp;
 using Newtonsoft.Json;
 using System.IO;
 
 namespace Blacksink
 {
+    /// <summary>
+    /// This form handles the inital connection to Blackboard.
+    /// It currently contains the most fool-proof (albeit in bad need of refactoring) login code.
+    /// TODO: refactor this into a few different classes (priority urgent)
+    /// </summary>
     public partial class frmSetup : Form
     {
         int Wizard_Position = 0;
@@ -42,9 +47,9 @@ namespace Blacksink
             OnAct = Act;
             connectionTimeout.Tick += ConnectionTimeout_Tick;
 
-            Form test = new Form();
-            test.Controls.Add(b_login);
-            test.Show();
+            //Form test = new Form();
+            //test.Controls.Add(b_login);
+            //test.Show();
         }
 
         private void ConnectionTimeout_Tick(object sender, EventArgs e) {
@@ -100,10 +105,17 @@ namespace Blacksink
                     MessageBox.Show("Invalid folder path, or permission to access was denied.");
                     return;
                 }
-                if (Directory.GetFiles(txLocation.Text).Length == 0 && Directory.GetDirectories(txLocation.Text).Length == 0) {
+
+                //Parse the location
+                string location = txLocation.Text.Replace("/", "\\");
+                location = location.EndsWith("\\") ? location : location + "\\";
+
+                //It can be either where are files are already stored, or an empty directory.
+                if (Properties.Settings.Default.StorageLocation == location ||
+                    (Directory.GetFiles(location).Length == 0 && Directory.GetDirectories(location).Length == 0)) {
+
                     //We are done! Save our configuration to settings
-                    string location = txLocation.Text.Replace("\\", "/");
-                    Properties.Settings.Default.StorageLocation = txLocation.Text.EndsWith("\\") ? txLocation.Text : txLocation.Text + "\\";
+                    Properties.Settings.Default.StorageLocation = location;
                     Properties.Settings.Default.StudentNumber = Security.EncryptString(textBox1.Text);
                     Properties.Settings.Default.StudentPassword = Security.EncryptString(textBox2.Text);
                     Properties.Settings.Default.is_setup = true;
@@ -117,6 +129,7 @@ namespace Blacksink
                     this.Close();
                 } else {
                     MessageBox.Show("Selected folder must be empty.");
+                    MessageBox.Show(Properties.Settings.Default.StorageLocation);
                 }
             }
         }
