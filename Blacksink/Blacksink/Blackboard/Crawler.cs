@@ -45,6 +45,8 @@ namespace Blacksink.Blackboard
         public event OnLoginProblemHandler OnLoginProblem;
         public delegate void OnConnectivityProblemHandler(object sender, EventArgs e);
         public event OnConnectivityProblemHandler OnConnectivityProblem;
+        public delegate void OnCrawlingHandler(object sender, EventArgs e);
+        public event OnCrawlingHandler OnCrawlingEvent;
         #endregion
 
         #region Constructor
@@ -272,8 +274,11 @@ namespace Blacksink.Blackboard
                                         //Console.WriteLine("[* Discovered] [" + pair.Key.Substring(0, 6) + "] " + pair.Value);
                                     }
                                 }
-                                if (urls.Count > 0)
+                                if (urls.Count > 0) {
+                                    if (OnCrawlingEvent != null)
+                                        OnCrawlingEvent(new object(), new EventArgs());
                                     Continue();
+                                }
                             }
                             else if (result == "login successful" || result == "login unsuccessful") {
                                 ++potentialLoginFails;

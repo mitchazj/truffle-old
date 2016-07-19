@@ -129,7 +129,6 @@ namespace Blacksink
                     this.Close();
                 } else {
                     MessageBox.Show("Selected folder must be empty.");
-                    MessageBox.Show(Properties.Settings.Default.StorageLocation);
                 }
             }
         }
