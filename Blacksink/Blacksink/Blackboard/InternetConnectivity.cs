@@ -20,7 +20,7 @@ namespace Blacksink.Blackboard
         public static bool strongInternetConnectionTest() {
             try {
                 Ping testGoogle = new Ping();
-                PingReply reply = testGoogle.Send("8.8.8.8", 1000, new byte[32]);
+                PingReply reply = testGoogle.Send("208.69.34.231", 1000, new byte[32]); //Google's IP address
                 return reply.Status == IPStatus.Success;
             }
             catch {

@@ -73,6 +73,7 @@ namespace Blacksink
             crawler.OnLoginProblem += Crawler_OnLoginProblem;
             crawler.OnLoginSuccess += Crawler_OnLoginSuccess;
             crawler.OnConnectivityProblem += Crawler_OnConnectivityProblem;
+            crawler.OnCrawlingEvent += Crawler_OnCrawlingEvent;
 
             tm_refresh.Tick += tm_refresh_Tick;
             tm_refresh_Tick(tm_refresh, new EventArgs()); //Fire the first event
@@ -104,6 +105,12 @@ namespace Blacksink
                 is_crawling = false;
                 Application.DoEvents();
             }
+        }
+
+        private void Crawler_OnCrawlingEvent(object sender, EventArgs e) {
+            main_icon.Icon = icon.mug_sync;
+            main_icon.Text = "Blackboard Sync in Progress...";
+            is_crawling = true;
         }
 
         private void Crawler_OnConnectivityProblem(object sender, EventArgs e) {
@@ -186,9 +193,9 @@ namespace Blacksink
                     conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
                     Console.WriteLine("[Level 2] Working Internet Connection - Timer Check");
                     return true;
-                } else if (conn_test_counter > 4) {
+                } else if (conn_test_counter > 5) {
                     conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
-                    if (conn_test_counter > 5) {
+                    if (conn_test_counter > 7) {
                         conn_test_counter = 0;
                         Console.WriteLine("[Level 4] No Internet Connection - Timer Check");
                         return false;
