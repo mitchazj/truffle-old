@@ -276,10 +276,10 @@
             this.ckImprove.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckImprove.Location = new System.Drawing.Point(227, 186);
             this.ckImprove.Name = "ckImprove";
-            this.ckImprove.Size = new System.Drawing.Size(365, 34);
+            this.ckImprove.Size = new System.Drawing.Size(404, 34);
             this.ckImprove.TabIndex = 24;
-            this.ckImprove.Text = "Love Truffle and want to help us make it better?\r\nSend us anonymous debug informa" +
-    "tion to help us locate and fix bugs :-)\r\n";
+            this.ckImprove.Text = "Love Truffle and want to help us make it better?\r\nSend us anonymous debugging inf" +
+    "ormation to help us locate and fix bugs :-)\r\n";
             this.ckImprove.UseVisualStyleBackColor = true;
             // 
             // pictureBox2

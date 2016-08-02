@@ -14,6 +14,8 @@ namespace Blacksink
     {
         public frmUpdate() {
             InitializeComponent();
+            if (!UacShield.IsAdmin())
+                UacShield.AddShieldToButton(btnInstall);
         }
     }
 }

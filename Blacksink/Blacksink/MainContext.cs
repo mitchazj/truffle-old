@@ -25,9 +25,6 @@ namespace Blacksink
         bool connectivity_issues = false;
         bool login_issues = false;
         bool first_time = false;
-        int conn_test_counter = 0;
-
-        int connectivity_fail_threshold = 10;
 
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -48,11 +45,15 @@ namespace Blacksink
                 frm.Show();
             }
 
+#if DEBUG
+            //Nothin'
+#else
             //Load registry value
             RegistryKey rk = Registry.CurrentUser.OpenSubKey(RegistryPath, true);
             isRunningOnLogin = (rk.GetValue(KeyName) != null);
             if (!isRunningOnLogin)
                 rk.SetValue(KeyName, Application.ExecutablePath);
+#endif
 
             try {
                 GlobalVariables.Units = JsonConvert.DeserializeObject<List<Unit>>(Properties.Settings.Default.UnitData);
@@ -144,7 +145,7 @@ namespace Blacksink
             }
         }
 
-        #region Overrides
+#region Overrides
         protected override void ExitThreadCore() {
             main_icon.Visible = false;
             main_icon.Dispose();
@@ -153,12 +154,12 @@ namespace Blacksink
             tm_refresh.Dispose();
             base.ExitThreadCore();
         }
-        #endregion
+#endregion
 
-        #region Refreshing
+#region Refreshing
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
-            if (checkInternet()) {
+            if (InternetConnectivity.checkInternet()) {
                 tm_refresh.Interval = 1000 * 60;
                 if (connectivity_issues && !is_crawling) {
                     main_icon.Icon = icon.mug_ok;
@@ -180,56 +181,9 @@ namespace Blacksink
                 Sync();
             }
         }
+#endregion
 
-        /// <summary>
-        /// Algorithm to check internet connection.
-        /// [Broken] [Level -1] The state of the system when internet has been declared unavailable.
-        /// [Level 0] If the system reports no cable/wifi connection, there is no connection
-        /// [Level 1] If the system reports cable/wifi, we can assume there is a connection for now
-        /// [Level 2] The system reported cable/wifi, be believed it, but let's check by pinging Google
-        /// [Level 3] If the system still reports cable/wifi, but a Google ping failed to work, we'll hope for the best and give it one more shot
-        /// [Level 4] Failed twice or more, so there is no connection because something's broken.
-        /// </summary>
-        /// <returns></returns>
-        private bool checkInternet() {
-            if (conn_test_counter == -1) {
-                //We have a problem. Major check til it works.
-                conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : -1;
-                return conn_test_counter == 0;
-            }
-
-            if (InternetConnectivity.IsConnectionAvailable()) {
-                ++conn_test_counter;
-                if (conn_test_counter == connectivity_fail_threshold) {
-                    conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
-                    Console.WriteLine("[Level 2] Working Internet Connection - Timer Check");
-                    return true;
-                } else if (conn_test_counter > connectivity_fail_threshold + 1) {
-                    conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
-                    if (conn_test_counter > connectivity_fail_threshold + 3) {
-                        conn_test_counter = -1;
-                        Console.WriteLine("[Level 4] No Internet Connection - Timer Check");
-                        return false;
-                    }
-                    else {
-                        //Let's give it one more shot
-                        Console.WriteLine("[Level 3] Working Internet Connection - Timer Check");
-                        return true;
-                    }
-                } else {
-                    Console.WriteLine("[Level 1] Working Internet Connection - Timer Check");
-                    return true;
-                }
-            }
-            else {
-                Console.WriteLine("[Level 0] No Connection - Timer Check");
-                conn_test_counter = -1;
-                return false;
-            }
-        }
-        #endregion
-
-        #region Other Voids
+#region Other Voids
         /// <summary>
         /// Places the Black-Sink icon in the Windows Task Tray
         /// </summary>
@@ -276,9 +230,9 @@ namespace Blacksink
                 Console.WriteLine("Sync rejected due to unresolved issues. Scanner has not been started.");
             }
         }
-        #endregion
+#endregion
 
-        #region Event Handlers
+#region Event Handlers
         private void onQuitClicked(object sender, EventArgs e) {
             this.ExitThreadCore();
         }
@@ -304,6 +258,6 @@ namespace Blacksink
             frm.OnSetupFinished += setupCompleted;
             frm.Show();
         }
-        #endregion
+#endregion
     }
 }
