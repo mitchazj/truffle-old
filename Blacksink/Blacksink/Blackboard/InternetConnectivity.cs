@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Net.NetworkInformation;
+using System.Net;
 
 namespace Blacksink.Blackboard
 {
@@ -17,11 +18,28 @@ namespace Blacksink.Blackboard
         private extern static bool InternetGetConnectedState(out int connDescription, int ReservedValue);
         public static bool IsConnectionAvailable() { int dummy; return InternetGetConnectedState(out dummy, 0); }
 
+        public static string[] test_websites = new string[] {
+            "http://www.bing.com/",
+            "http://www.abc.net.au/",
+            "http://www.facebook.com/"
+        };
+
+        public static Random picker = new Random();
+
+        /// <summary>
+        /// Test the internet connection by randomly attempting to access a website of choice.
+        /// </summary>
+        /// <returns></returns>
         public static bool strongInternetConnectionTest() {
             try {
-                Ping testGoogle = new Ping();
-                PingReply reply = testGoogle.Send("qut.edu.au", 1000, new byte[32]); //Ping QUT
-                return reply.Status == IPStatus.Success;
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(test_websites[picker.Next(test_websites.Length)]);
+                request.Timeout = 3000;
+                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             catch {
                 return false;

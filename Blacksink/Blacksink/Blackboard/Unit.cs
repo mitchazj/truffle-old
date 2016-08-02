@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,10 @@ namespace Blacksink.Blackboard
                 if (!found) {
                     GlobalVariables.Units.Add(unit);
                 }
+
+                //Make sure the directory exists
+                string directory = Properties.Settings.Default.StorageLocation + (unit.Name != "" ? unit.Name + "/" : "");
+                Directory.CreateDirectory(directory);
             }
             else {
                 throw new Exception("Should not call this before GlobalVariables.Units is created.");

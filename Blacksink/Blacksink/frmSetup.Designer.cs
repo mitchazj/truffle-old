@@ -45,6 +45,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.pnFileLocation = new System.Windows.Forms.Panel();
+            this.ckImprove = new System.Windows.Forms.CheckBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -101,9 +102,9 @@
             this.lbAbout.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.lbAbout.Location = new System.Drawing.Point(12, 14);
             this.lbAbout.Name = "lbAbout";
-            this.lbAbout.Size = new System.Drawing.Size(44, 13);
+            this.lbAbout.Size = new System.Drawing.Size(77, 13);
             this.lbAbout.TabIndex = 2;
-            this.lbAbout.Text = "About...";
+            this.lbAbout.Text = "About Truffle...";
             this.lbAbout.Click += new System.EventHandler(this.lbAbout_Click);
             // 
             // btnNext
@@ -254,6 +255,7 @@
             // 
             // pnFileLocation
             // 
+            this.pnFileLocation.Controls.Add(this.ckImprove);
             this.pnFileLocation.Controls.Add(this.pictureBox2);
             this.pnFileLocation.Controls.Add(this.label3);
             this.pnFileLocation.Controls.Add(this.label4);
@@ -268,10 +270,22 @@
             this.pnFileLocation.TabIndex = 6;
             this.pnFileLocation.Visible = false;
             // 
+            // ckImprove
+            // 
+            this.ckImprove.Checked = true;
+            this.ckImprove.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckImprove.Location = new System.Drawing.Point(227, 186);
+            this.ckImprove.Name = "ckImprove";
+            this.ckImprove.Size = new System.Drawing.Size(365, 34);
+            this.ckImprove.TabIndex = 24;
+            this.ckImprove.Text = "Love Truffle and want to help us make it better?\r\nSend us anonymous debug informa" +
+    "tion to help us locate and fix bugs :-)\r\n";
+            this.ckImprove.UseVisualStyleBackColor = true;
+            // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::Blacksink.Properties.Resources.tick;
-            this.pictureBox2.Location = new System.Drawing.Point(221, 60);
+            this.pictureBox2.Location = new System.Drawing.Point(221, 37);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(55, 50);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -284,7 +298,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label3.Location = new System.Drawing.Point(277, 67);
+            this.label3.Location = new System.Drawing.Point(277, 44);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(126, 20);
             this.label3.TabIndex = 21;
@@ -294,7 +308,7 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(278, 89);
+            this.label4.Location = new System.Drawing.Point(278, 66);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(280, 13);
             this.label4.TabIndex = 22;
@@ -302,7 +316,7 @@
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(532, 174);
+            this.btnBrowse.Location = new System.Drawing.Point(532, 151);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 23);
             this.btnBrowse.TabIndex = 20;
@@ -312,7 +326,7 @@
             // 
             // txLocation
             // 
-            this.txLocation.Location = new System.Drawing.Point(227, 176);
+            this.txLocation.Location = new System.Drawing.Point(227, 153);
             this.txLocation.Name = "txLocation";
             this.txLocation.Size = new System.Drawing.Size(299, 20);
             this.txLocation.TabIndex = 19;
@@ -334,7 +348,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(188)))));
-            this.label9.Location = new System.Drawing.Point(223, 130);
+            this.label9.Location = new System.Drawing.Point(223, 107);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(334, 20);
             this.label9.TabIndex = 12;
@@ -344,7 +358,7 @@
             // 
             this.label10.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(224, 152);
+            this.label10.Location = new System.Drawing.Point(224, 129);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(233, 13);
             this.label10.TabIndex = 13;
@@ -361,6 +375,7 @@
             this.Controls.Add(this.pnContain);
             this.Controls.Add(this.pnDecorative);
             this.Controls.Add(this.pnBottom);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -411,6 +426,7 @@
         private System.Windows.Forms.Label lbStudentNumber;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.CheckBox ckImprove;
     }
 }
 

@@ -27,6 +27,8 @@ namespace Blacksink
         bool first_time = false;
         int conn_test_counter = 0;
 
+        int connectivity_fail_threshold = 10;
+
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         private const string KeyName = "TruffleMITCH";
@@ -165,7 +167,7 @@ namespace Blacksink
                 }
                 connectivity_issues = false;
             } else {
-                tm_refresh.Interval = 1000 * 5;
+                tm_refresh.Interval = 1000 * 15;
                 main_icon.Icon = icon.mug_error;
                 main_icon.Text = "Truffle\r\nNo Internet Connection";
                 connectivity_issues = true;
@@ -198,13 +200,13 @@ namespace Blacksink
 
             if (InternetConnectivity.IsConnectionAvailable()) {
                 ++conn_test_counter;
-                if (conn_test_counter == 4) {
+                if (conn_test_counter == connectivity_fail_threshold) {
                     conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
                     Console.WriteLine("[Level 2] Working Internet Connection - Timer Check");
                     return true;
-                } else if (conn_test_counter > 5) {
+                } else if (conn_test_counter > connectivity_fail_threshold + 1) {
                     conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
-                    if (conn_test_counter > 7) {
+                    if (conn_test_counter > connectivity_fail_threshold + 3) {
                         conn_test_counter = -1;
                         Console.WriteLine("[Level 4] No Internet Connection - Timer Check");
                         return false;

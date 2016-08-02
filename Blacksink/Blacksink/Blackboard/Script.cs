@@ -40,7 +40,7 @@ namespace Blacksink.Blackboard
                     }
                     else {
                         //We're in. Now gimme units.
-                        if (e('#UnitList').length != 0) {
+                        if (window.location.href.contains('webapps/portal/execute/') && e('#UnitList').length != 0) {
                             //We have our units before us. Extract the data and calculate the inverse chromosome.
                             var units = e('#qutmyunits_' + (new Date()).getFullYear() + ' a'), unit_names = [], unit_links = [];
                             for (var j = 0; j < units.length; ++j) {
@@ -54,7 +54,7 @@ namespace Blacksink.Blackboard
                             }
                             return JSON.stringify(unit_data);
                         }
-                        else {
+                        else if (window.location.href.contains('blackboard.qut.edu.au/webapps/')) {
                             //Hey, we've already grabbed our units. Where are we?
                             if (!window.location.href.contains('webapps/blackboard/execute/announcement')) {
                                 //Do not try to bend the data; that's impossible. Instead, only try to realize the truth... there is no data.
@@ -72,7 +72,7 @@ namespace Blacksink.Blackboard
                                 var links = e('#courseMenuPalette_contents a'), urls = [];
                                 for (var j = 0; j < links.length; ++j) {
                                     var u_href = links[j].getAttribute('href'), u_content = links[j].children[0].getAttribute('title');
-                                    if (u_content.contains('Assessment') || u_content.contains('Learning Resources')) {
+                                    if (!u_content.contains('Announcements') && !u_content.contains('Tools') && !u_content.contains('Contact') && !u_content.contains('Unit Details') && !u_content.contains('ePortfolio') && !u_content.contains('Feedback')) {
                                         urls.push(u_href);
                                     }
                                 }

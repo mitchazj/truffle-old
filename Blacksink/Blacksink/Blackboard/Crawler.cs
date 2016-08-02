@@ -250,7 +250,7 @@ namespace Blacksink.Blackboard
         /// <param name="b">The ChromimumWebBrowser to inject into.</param>
         private void Inject(ChromiumWebBrowser b) {
             if (!emergency_stop) {
-                //All clear. 99.99% of the time the above doesn't matter.
+                //All clear. 99.99% of the time the line above doesn't matter.
                 var task = b.EvaluateScriptAsync(js_inject);
                 task.ContinueWith(t => {
                     if (!t.IsFaulted) {
