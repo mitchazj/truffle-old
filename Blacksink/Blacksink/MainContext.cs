@@ -19,7 +19,7 @@ namespace Blacksink
         //For the crawling :P
         Crawler crawler = new Crawler();
         //Check if it's time to update.
-        Timer tm_refresh = new Timer() { Interval = 1000 * 10 };
+        Timer tm_refresh = new Timer() { Interval = 1000 * 60 };
 
         bool is_crawling = false;
         bool connectivity_issues = false;
@@ -157,13 +157,15 @@ namespace Blacksink
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
             if (checkInternet()) {
+                tm_refresh.Interval = 1000 * 60;
                 if (connectivity_issues && !is_crawling) {
-                    connectivity_issues = false;
                     main_icon.Icon = icon.mug_ok;
                     main_icon.Text = "Truffle\r\nLast Synchronized " + Properties.Settings.Default.LastSyncTime.ToString("t");
                     Application.DoEvents();
                 }
+                connectivity_issues = false;
             } else {
+                tm_refresh.Interval = 1000 * 5;
                 main_icon.Icon = icon.mug_error;
                 main_icon.Text = "Truffle\r\nNo Internet Connection";
                 connectivity_issues = true;
@@ -179,6 +181,7 @@ namespace Blacksink
 
         /// <summary>
         /// Algorithm to check internet connection.
+        /// [Broken] [Level -1] The state of the system when internet has been declared unavailable.
         /// [Level 0] If the system reports no cable/wifi connection, there is no connection
         /// [Level 1] If the system reports cable/wifi, we can assume there is a connection for now
         /// [Level 2] The system reported cable/wifi, be believed it, but let's check by pinging Google
@@ -187,6 +190,12 @@ namespace Blacksink
         /// </summary>
         /// <returns></returns>
         private bool checkInternet() {
+            if (conn_test_counter == -1) {
+                //We have a problem. Major check til it works.
+                conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : -1;
+                return conn_test_counter == 0;
+            }
+
             if (InternetConnectivity.IsConnectionAvailable()) {
                 ++conn_test_counter;
                 if (conn_test_counter == 4) {
@@ -196,7 +205,7 @@ namespace Blacksink
                 } else if (conn_test_counter > 5) {
                     conn_test_counter = InternetConnectivity.strongInternetConnectionTest() ? 0 : conn_test_counter + 1;
                     if (conn_test_counter > 7) {
-                        conn_test_counter = 0;
+                        conn_test_counter = -1;
                         Console.WriteLine("[Level 4] No Internet Connection - Timer Check");
                         return false;
                     }
@@ -212,7 +221,7 @@ namespace Blacksink
             }
             else {
                 Console.WriteLine("[Level 0] No Connection - Timer Check");
-                conn_test_counter = 0;
+                conn_test_counter = -1;
                 return false;
             }
         }
