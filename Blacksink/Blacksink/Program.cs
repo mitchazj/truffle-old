@@ -26,6 +26,7 @@ namespace Blacksink
                     Application.SetCompatibleTextRenderingDefault(false);
                     CefSharp.Cef.EnableHighDPISupport();
                     //Application.Run(new Blackboard.frmTestInternet());
+                    //Application.Run(new Blackboard.frmUnitExplorer());
                     Application.Run(new MainContext());
                     CefSharp.Cef.Shutdown();
                 }

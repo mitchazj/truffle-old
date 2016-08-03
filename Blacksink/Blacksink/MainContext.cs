@@ -79,7 +79,7 @@ namespace Blacksink
             crawler.OnCrawlingEvent += Crawler_OnCrawlingEvent;
 
             tm_refresh.Tick += tm_refresh_Tick;
-            tm_refresh_Tick(tm_refresh, new EventArgs()); //Fire the first event
+            //tm_refresh_Tick(tm_refresh, new EventArgs()); //Fire the first event
             tm_refresh.Start();
         }
 

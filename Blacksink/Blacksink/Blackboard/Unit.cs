@@ -11,6 +11,7 @@ namespace Blacksink.Blackboard
     {
         public string Name { get; set; }
         public string URL { get; set; }
+
         public List<BlackboardFile> Files { get; set; }
 
         public Unit() { }

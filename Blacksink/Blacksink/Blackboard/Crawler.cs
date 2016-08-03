@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
+#if DEBUG
+using CefSharp.WinForms;
+#else
 using CefSharp.OffScreen;
+#endif
 using Newtonsoft.Json;
 using System.Threading;
 
@@ -13,14 +17,14 @@ namespace Blacksink.Blackboard
 {
     public class Crawler : Control
     {
-        #region Crawling Stuff
+#region Crawling Stuff
         private ChromiumWebBrowser b_root = null;
         string js_inject = "";
 
         Thread crawler;
         List<CrawlableURL> urls = new List<CrawlableURL>();
         List<string> crawled_urls = new List<string>();
-        bool crawl_started = false, safe_to_continue = true;
+        bool crawl_started = false, safe_to_continue = true, crawl_initiated = false;
 
         DateTime crawl_start;
         DownloadHandler d_handler;
@@ -30,9 +34,9 @@ namespace Blacksink.Blackboard
         int potentialLoginFails = 0;
         const int potentialLoginFailsThreshold = 2;
         bool emergency_stop = false;
-        #endregion
+#endregion
 
-        #region Events
+#region Events
         private delegate void OnCrawlRequestHandler(string url);
         private OnCrawlRequestHandler OnCrawlRequest;
         private delegate void OnPageInjectHandler(bool is_specialConsideration);
@@ -47,9 +51,9 @@ namespace Blacksink.Blackboard
         public event OnConnectivityProblemHandler OnConnectivityProblem;
         public delegate void OnCrawlingHandler(object sender, EventArgs e);
         public event OnCrawlingHandler OnCrawlingEvent;
-        #endregion
+#endregion
 
-        #region Constructor
+#region Constructor
         public Crawler() {
             OnPageInject = ThreadSafePageInject;
             OnCrawlRequest = ThreadSafeCrawlRequest;
@@ -66,16 +70,18 @@ namespace Blacksink.Blackboard
             b_root.FrameLoadEnd += b_root_FrameLoadEnd; //This allows us to inject JS in a timely manner
             OnSyncCompleted += Crawler_OnSyncCompleted;
 
+#if DEBUG
+            Form test = new Form();
+            test.Controls.Add(b_root);
+            test.Show();
+#endif
+
             this.CreateHandle();
             Application.DoEvents();
-
-            //Form test = new Form();
-            //test.Controls.Add(b_root);
-            //test.Show();
         }
-        #endregion
+#endregion
 
-        #region Destructor :P
+#region Destructor :P
         protected override void Dispose(bool disposing) {
             if (crawler != null) {
                 try {
@@ -87,9 +93,9 @@ namespace Blacksink.Blackboard
 
             base.Dispose(disposing);
         }
-        #endregion
+#endregion
 
-        #region Private Event Handlers
+#region Private Event Handlers
 
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
             //TODO: do something
@@ -102,11 +108,16 @@ namespace Blacksink.Blackboard
         /// Whenever b_root finishes loading a page, we inject our JS.
         /// </summary>
         private void b_root_FrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
-            if (InternetConnectivity.IsConnectionAvailable()) {
-                ThreadSafePageInject(isSpecialConsideration(e.Url));
-            } else {
-                if (OnConnectivityProblem != null)
-                    OnConnectivityProblem(new object(), new EventArgs());
+            Console.WriteLine("Page loaded");
+            if (crawl_initiated) {
+                Console.WriteLine("Page loaded");
+                if (InternetConnectivity.IsConnectionAvailable()) {
+                    ThreadSafePageInject(isSpecialConsideration(e.Url));
+                }
+                else {
+                    if (OnConnectivityProblem != null)
+                        OnConnectivityProblem(new object(), new EventArgs());
+                }
             }
         }
 
@@ -117,17 +128,20 @@ namespace Blacksink.Blackboard
             safe_to_continue = true;
         }
 
-        #endregion
+#endregion
 
-        #region Crawling Controllers
+#region Crawling Controllers
         /// <summary>
         /// Begins a generic crawl after refreshing the username and password.
         /// If the username and pasword are empty, an exception is thrown.
         /// </summary>
         public void Crawl() {
+            Console.WriteLine("Triggered!");
             string username = Security.DecryptString(Properties.Settings.Default.StudentNumber);
             string password = Security.DecryptString(Properties.Settings.Default.StudentPassword);
             if (username != "" && password != "") {
+                Console.WriteLine("We got to here!");
+
                 //Create our personalized injection script
                 js_inject = Script.getScript(username, password);
 
@@ -135,9 +149,11 @@ namespace Blacksink.Blackboard
                 crawled_urls.Clear();
                 emergency_stop = false;
                 crawl_started = false;
+                crawl_initiated = true;
 
                 //Begin crawl.
                 ThreadSafeCrawlRequest("http://blackboard.qut.edu.au/");
+                Console.WriteLine("Boom!");
             } else {
                 throw new Exception("Empty Username and/or Password.");
             }
@@ -209,7 +225,7 @@ namespace Blacksink.Blackboard
                             Thread.Sleep(100);
                     }
                     else {
-                        //Console.WriteLine("[Skipped] : " + url);
+                        Console.WriteLine("[Skipped] : " + url);
                     }
                 }
                 else {
@@ -225,9 +241,9 @@ namespace Blacksink.Blackboard
             emergency_stop = false;
         }
 
-        #endregion
+#endregion
 
-        #region Inject Controllers
+#region Inject Controllers
 
         /// <summary>
         /// Thread-safe JS injection
@@ -249,15 +265,18 @@ namespace Blacksink.Blackboard
         /// </summary>
         /// <param name="b">The ChromimumWebBrowser to inject into.</param>
         private void Inject(ChromiumWebBrowser b) {
+            Console.WriteLine("Injection called");
             if (!emergency_stop) {
                 //All clear. 99.99% of the time the line above doesn't matter.
                 var task = b.EvaluateScriptAsync(js_inject);
+                Console.WriteLine("Injection happening!");
                 task.ContinueWith(t => {
                     if (!t.IsFaulted) {
                         var response = t.Result;
                         if (response.Success == true && response.Result != null) {
                             var result = response.Result.ToString();
                             if (result != string.Empty && result != "null" && result != "login successful" && result != "login unsuccessful") {
+                                Console.WriteLine("This spot");
                                 potentialLoginFails = 0; //No need to worry :-)
                                 OnLoginSuccess?.Invoke(new object(), new EventArgs()); //Tell the main class it's all good
                                 Dictionary<string, string> conversion = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
@@ -281,6 +300,7 @@ namespace Blacksink.Blackboard
                                 }
                             }
                             else if (result == "login successful" || result == "login unsuccessful") {
+                                Console.WriteLine("Uhmmmmm?");
                                 ++potentialLoginFails;
                                 if (potentialLoginFails > potentialLoginFailsThreshold) {
                                     //We might have a problem xD
@@ -314,15 +334,15 @@ namespace Blacksink.Blackboard
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        #endregion
+#endregion
 
-        #region Special Consideration Files
+#region Special Consideration Files
         private bool isSpecialConsideration(string url) {
             url = url.ToLower();
             return url.EndsWith(".pdf") || url.EndsWith(".png") || url.EndsWith(".jpeg") || url.EndsWith(".jpg")
                 || url.EndsWith(".m3p") || url.EndsWith(".mp3") || url.EndsWith(".mp4") || url.EndsWith(".wav")
                 || url.EndsWith(".flac") || url.EndsWith(".midi");
         }
-        #endregion
+#endregion
     }
 }

@@ -54,26 +54,32 @@ namespace Blacksink.Blackboard
                             }
                             return JSON.stringify(unit_data);
                         }
-                        else if (window.location.href.contains('blackboard.qut.edu.au/webapps/')) {
+                        else {
                             //Hey, we've already grabbed our units. Where are we?
                             if (!window.location.href.contains('webapps/blackboard/execute/announcement')) {
                                 //Do not try to bend the data; that's impossible. Instead, only try to realize the truth... there is no data.
                                 var links = e('#content_listContainer a'), urls = [];
                                 for (var j = 0; j < links.length; ++j) {
                                     var u_href = links[j].getAttribute('href');
-                                    if (u_href.contains('/bbcswebdav/') || u_href.contains('/webapps/blackboard/content/')) {
+                                    if (u_href.contains('/bbcswebdav/')) {
                                         urls.push(u_href);
+                                    } else if (u_href.contains('/webapps/blackboard/content/')) {
+                                        if (getURLQueryParams(document.location.search).course_id == getURLQueryParams(getSearchFromURL(u_href)).course_id) {
+                                            urls.push(u_href);
+                                        }
                                     }
                                 }
                                 return JSONify(urls);
                             }
-                            else {
+                            else if (window.location.href.contains('://blackboard.qut.edu.au/')) {
                                 //We are on the Announcements page. These are not the links you're looking for.
                                 var links = e('#courseMenuPalette_contents a'), urls = [];
                                 for (var j = 0; j < links.length; ++j) {
                                     var u_href = links[j].getAttribute('href'), u_content = links[j].children[0].getAttribute('title');
                                     if (!u_content.contains('Announcements') && !u_content.contains('Tools') && !u_content.contains('Contact') && !u_content.contains('Unit Details') && !u_content.contains('ePortfolio') && !u_content.contains('Feedback')) {
-                                        urls.push(u_href);
+                                        if (getURLQueryParams(document.location.search).course_id == getURLQueryParams(getSearchFromURL(u_href)).course_id) {
+                                            urls.push(u_href);
+                                        }
                                     }
                                 }
                                 return JSONify(urls);
@@ -86,6 +92,24 @@ namespace Blacksink.Blackboard
                     var data_json = { };
                     for (var j = 0; j < array.length; ++j) { data_json[j] = array[j]; }
                     return JSON.stringify(data_json);
+                }
+
+                function getURLQueryParams(qs) {
+                    qs = qs.split('+').join(' ');
+
+                    var params = {},
+                        tokens,
+                        re = /[?&]?([^=]+)=([^&]*)/g;
+
+                    while (tokens = re.exec(qs)) {
+                        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+                    }
+
+                    return params;
+                }
+
+                function getSearchFromURL(url) {
+                    return url.substring(url.indexOf('?'));
                 }
 
                 main();";

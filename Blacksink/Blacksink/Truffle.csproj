@@ -105,6 +105,12 @@
     <Compile Include="Blackboard\frmTestInternet.Designer.cs">
       <DependentUpon>frmTestInternet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Blackboard\frmUnitExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Blackboard\frmUnitExplorer.Designer.cs">
+      <DependentUpon>frmUnitExplorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Blackboard\InternetConnectivity.cs" />
     <Compile Include="Blackboard\JsDialogHandler.cs" />
     <Compile Include="Blackboard\Script.cs" />
@@ -145,6 +151,9 @@
     <Compile Include="UacShield.cs" />
     <EmbeddedResource Include="Blackboard\frmTestInternet.resx">
       <DependentUpon>frmTestInternet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Blackboard\frmUnitExplorer.resx">
+      <DependentUpon>frmUnitExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
