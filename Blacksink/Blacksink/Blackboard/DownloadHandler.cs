@@ -47,6 +47,19 @@ namespace Blacksink.Blackboard
                     else {
                         //FUTURE FEATURE: Allow files to be marked for redownloading.
                         ++GlobalVariables.FilesSkipped;
+
+                        if (!Unit.IsFilePreviouslyDownloaded(GlobalVariables.CurrentUrl)) {
+                            //Whoops. Might be from a previous release
+                            BlackboardFile f = new BlackboardFile(downloadItem.SuggestedFileName, downloadItem.Url);
+                            f.RawURL = GlobalVariables.CurrentUrl;
+                            f.FirstDownloaded = DateTime.Now;
+                            f.LastDownloaded = DateTime.Now;
+                            f.TimesDownloaded = 1;
+                            f.LocalPath = filename;
+
+                            //We know the unit we want exists in GlobalVariables.Units because it was created before the download started, back in Crawler.cs
+                            GlobalVariables.Units.First(u => u.Name == GlobalVariables.CurrentUnitCode).Files.Add(f);
+                        }
                     }
 
                     if (DownloadHandled != null)
