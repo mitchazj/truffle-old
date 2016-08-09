@@ -9,10 +9,13 @@ namespace Blacksink.Blackboard
     public class CrawlableURL
     {
         public string URL { get; set; }
+        public string Subfolder { get; set; }
         public string UnitCode { get; set; }
 
-        public CrawlableURL(string unitcode, string url) {
-            URL = url; UnitCode = unitcode;
+        public CrawlableURL(string unitcode, string subfolder, string url) {
+            URL = url;
+            UnitCode = unitcode;
+            Subfolder = subfolder;
         }
     }
 }

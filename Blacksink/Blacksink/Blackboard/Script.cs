@@ -78,7 +78,7 @@ namespace Blacksink.Blackboard
                                     var u_href = links[j].getAttribute('href'), u_content = links[j].children[0].getAttribute('title');
                                     if (!u_content.contains('Announcements') && !u_content.contains('Tools') && !u_content.contains('Contact') && !u_content.contains('Unit Details') && !u_content.contains('ePortfolio') && !u_content.contains('Feedback')) {
                                         if (getURLQueryParams(document.location.search).course_id == getURLQueryParams(getSearchFromURL(u_href)).course_id) {
-                                            urls.push(u_href);
+                                            urls.push('FOLDER [/[' + u_content + ']/] ' + u_href);
                                         }
                                     }
                                 }

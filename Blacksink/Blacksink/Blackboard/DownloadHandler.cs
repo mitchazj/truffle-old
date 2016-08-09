@@ -13,6 +13,7 @@ namespace Blacksink.Blackboard
         public static List<Unit> Units { get; set; }
 
         public static string CurrentUnitCode { get; set; }
+        public static string CurrentUnitFolder { get; set; }
         public static string CurrentUrl { get; set; }
         public static int FilesDownloaded = 0;
         public static int FilesSkipped = 0;

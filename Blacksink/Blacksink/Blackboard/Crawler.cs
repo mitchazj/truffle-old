@@ -29,6 +29,7 @@ namespace Blacksink.Blackboard
         DateTime crawl_start;
         DownloadHandler d_handler;
         public string current_unitcode = "";
+        public string current_folder = "";
         public string current_page = "";
 
         int potentialLoginFails = 0;
@@ -200,6 +201,7 @@ namespace Blacksink.Blackboard
                     //Get the URL at index 0 and work with it.
                     CrawlableURL curl = urls[0];
                     string url = curl.URL;
+                    
                     url = url.Contains("http") ? url : "https://blackboard.qut.edu.au/" + url;
 
                     //Remove it, allowing the next URL in the list to fall into place for next time.
@@ -288,7 +290,7 @@ namespace Blacksink.Blackboard
                                     }
                                     else {
                                         string u_code = pair.Key.Substring(0, 6);
-                                        urls.Add(new CrawlableURL(u_code, pair.Value));
+                                        urls.Add(new CrawlableURL(u_code, "", pair.Value));
                                         Unit.EnsureExists(new Unit(u_code, pair.Value));
                                         //Console.WriteLine("[* Discovered] [" + pair.Key.Substring(0, 6) + "] " + pair.Value);
                                     }
