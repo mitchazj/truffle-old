@@ -194,10 +194,23 @@ h1, h2, h3, h4 {
     margin: 0 10px;
 }
 
+.updates {
+    margin: 6px 0;
+}
+.new-file {
+    font-size: 13.33333px;
+    color: #0079C6;
+    cursor: pointer;
+    padding: 3px 0;
+} .new-file:hover {
+    color: #006DB2;
+    text-decoration: underline;
+}
+
 .status-indicator {
     font-size: 13.33333px;
     padding: 3px 8px;
-    margin-top: 6px;
+    margin: 6px 0 12px;
     background-color: rgba(107, 212, 37, .5); /*rgba(86, 215, 43, .11);*/
 }
 
