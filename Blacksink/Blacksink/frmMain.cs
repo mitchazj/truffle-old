@@ -17,7 +17,14 @@ namespace Blacksink
         public frmMain() {
             InitializeComponent();
             main_GUI = new ChromiumWebBrowser("http://localhost:61210/");
-            this.Controls.Add(main_GUI);
+            main_GUI.MouseDown += Main_GUI_MouseDown;
+            pnMain.Controls.Add(main_GUI);
+        }
+
+        private void Main_GUI_MouseDown(object sender, MouseEventArgs e) {
+            if (e.Location.Y < 45) {
+                MessageBox.Show("Test Successful");
+            }
         }
     }
 }

@@ -16,6 +16,44 @@ h1, h2, h3, h4 {
     font-weight: 300;
 }
 
+#window-buttons {
+    position: fixed;
+    flex-direction: row;
+    right: 0;
+    top: 0;
+    z-index: 999;
+} #window-buttons div {
+    width: 32px;
+    height: 10px;
+    padding: 8px 0;
+    box-sizing: content-box;
+    display: inline-block;
+    float: right;
+    text-align: center;
+    transition: all 170ms ease;
+    opacity: .5;
+} #window-buttons div:before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    display: block;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+} #window-buttons #close:before {
+    background-image: url('img/close_b.png');
+}  #window-buttons #maximize:before {
+    background-image: url('img/max.png');
+}  #window-buttons #minimize:before {
+    background-image: url('img/min.png');
+} #window-buttons div:hover {
+    background-color: rgba(0, 0, 0, .15);
+    opacity: 1;
+} #window-buttons #close:hover {
+    background-color: #e04343;
+} #window-buttons #close:hover:before {
+    background-image: url('img/close_w.png');
+}
+
 #left-nav {
     display: flex;
     flex-direction: column;
@@ -23,13 +61,13 @@ h1, h2, h3, h4 {
     padding: 15px;
     padding-right: 20px;
     box-shadow: -10px 0 5px -5px rgba(0, 0, 0, .1) inset;
-    background-color: #0079C6;
+    background-color: #223843;
     color: #fff;
 }
 
 #logo {
     height: 32px;
-    margin-bottom: 16px;
+    margin-bottom: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -44,6 +82,7 @@ h1, h2, h3, h4 {
 
 #search-box {
     padding: 5px 8px;
+    margin: 0 -5px;
     margin-bottom: 8px;
     background-color: rgba(0, 0, 0, .1);
     color: #fff;
@@ -53,11 +92,11 @@ h1, h2, h3, h4 {
 
 #left-nav h3 {
     font-size: 13px;
-    padding: 5px 8px;
+    padding: 5px 0;
 }
 
 #main-workspace {
     flex-grow: 1;
-    background-color: #eee;
+    background-color: #fff;
     padding: 15px 25px;
 }
