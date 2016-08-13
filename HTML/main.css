@@ -65,23 +65,60 @@ h1, h2, h3, h4 {
     color: #fff;
 }
 
-#logo {
+#profile {
     height: 32px;
     margin-bottom: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: left center;
-} #logo img{
+} #profile img{
     height: 32px;
     width: 32px;
-    margin-right: 8px;
-} #logo h2 {
+    margin-right: 12px;
+} #profile h2 {
     font-size: 18px;
 }
 
+#unit-list {
+    margin-bottom: 12px;
+    padding-top: 6px; 
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+} #unit-list a {
+    display: block;
+    padding: 8px 12px;
+    margin: 0 -5px;
+    background-color: rgba(0, 0, 0, .1);
+    font-size: 13.33333px;
+    text-decoration: none;
+    transition: all 170ms ease;
+    color: rgba(255, 255, 255, .6);
+} #unit-list a:hover {
+    background-color: rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, 1);
+} #unit-list a.active {
+    background-color: rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, .95);
+}  #unit-list a.active:hover {
+    background-color: rgba(255, 255, 255, .2);
+    color: rgba(255, 255, 255, 1);
+} #unit-list a.active:before {
+    content: "";
+    position: relative;
+    bottom: 1px;
+    display: inline-block;
+    margin-right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, .3);
+} #unit-list a.new:before {
+    background-color: #9BC995;
+}
+
 #search-box {
-    padding: 5px 8px;
+    padding: 8px 12px;
     margin: 0 -5px;
     margin-bottom: 8px;
     background-color: rgba(0, 0, 0, .1);
@@ -98,5 +135,55 @@ h1, h2, h3, h4 {
 #main-workspace {
     flex-grow: 1;
     background-color: #fff;
+    position: relative;
     padding: 15px 25px;
+}
+
+#bottom-bar {
+    position: fixed;
+    display: flex;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #0079C6;
+    height: 48px;
+}
+
+#buttons {
+    width: 250px;
+    display: flex;
+    color: rgba(255, 255, 255, .9);
+    /* box-shadow: -10px 0 5px -5px rgba(0, 0, 0, .1) inset; */
+    height: 100%;
+}
+
+#buttons i {
+    height: 1em;
+}
+
+#buttons div {
+    cursor: pointer;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 170ms ease;
+    background-color: rgba(0, 0, 0, .1);
+} #buttons div:hover {
+    background-color: rgba(0, 0, 0, .2);
+    color: #fff;
+} #buttons #donate {
+    background-color: rgba(255, 255, 255, .1);
+}  #buttons #donate:hover {
+    background-color: rgba(255, 255, 255, .2);
+}
+
+#bottom-main {
+    flex-grow: 1;
+}
+
+#right-buttons {
+    width: 250px;
+    height: 100%;
+    background-color: #006DB2;
 }

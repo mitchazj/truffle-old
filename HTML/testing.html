@@ -6,21 +6,43 @@
 </head>
 <body>
     <div id='left-nav'>
-        <div id="logo">
-            <img src="logo32.png" />
-            <h2>Truffle</h2>
+        <div id="profile">
+            <img src="me.png" />
+            <h2>n9656383</h2>
         </div>
-        <input id="search-box" type="text" placeholder="Search for units..."/>
+        
         <h3>My Units</h3>
+        <div id="unit-list">
+            <a href="#" class="active">IFB102</a>
+            <a href="#" class="active new">IFB103</a>
+            <a href="#" class="active">MXB105</a>
+            <a href="#" class="active">MXB106</a>
+        </div>
+        <h3>Previous Units</h3>
+        <div id="unit-list">
+            <a href="#">IFB101 [Sem 1 2016]</a>
+            <a href="#">IFB104 [Sem 1 2016]</a>
+            <a href="#">MXB102 [Sem 1 2016]</a>
+            <a href="#">MXB103 [Sem 1 2016]</a>
+        </div>
+        <input id="search-box" type="text" placeholder="Find more units..."/>
     </div>
     <div id="main-workspace">
-        <div id="window-buttons">
+        <!--<div id="window-buttons">
             <div id="close"></div>
             <div id="maximize"></div>
             <div id="minimize"></div>
-        </div>
+        </div>-->
         <h1>Latest Updates</h1>
         <button onclick="refreshDebugPage()">Refresh</button>
+        <div id="bottom-bar">
+            <div id="buttons">
+                <div id="settings"><span><i class="fa fa-cog" aria-hidden="true"></i> Settings</span></div>
+                <div id="donate"><span><i class="fa fa-usd" aria-hidden="true"></i> Donate</span></div>
+            </div>
+            <div id="bottom-main"></div>
+            <div id="right-buttons"></div>
+        </div>
     </div>
     <script>
         function refreshDebugPage() {
