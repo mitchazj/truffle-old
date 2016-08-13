@@ -17,7 +17,7 @@ namespace Blacksink.Blackboard
 {
     public class Crawler : Control
     {
-#region Crawling Stuff
+        #region Crawling Stuff
         private ChromiumWebBrowser b_root = null;
         string js_inject = "";
 
@@ -34,9 +34,9 @@ namespace Blacksink.Blackboard
         int potentialLoginFails = 0;
         const int potentialLoginFailsThreshold = 2;
         bool emergency_stop = false;
-#endregion
+        #endregion
 
-#region Events
+        #region Events
         private delegate void OnCrawlRequestHandler(string url);
         private OnCrawlRequestHandler OnCrawlRequest;
         private delegate void OnPageInjectHandler(bool is_specialConsideration);
@@ -51,9 +51,9 @@ namespace Blacksink.Blackboard
         public event OnConnectivityProblemHandler OnConnectivityProblem;
         public delegate void OnCrawlingHandler(object sender, EventArgs e);
         public event OnCrawlingHandler OnCrawlingEvent;
-#endregion
+        #endregion
 
-#region Constructor
+        #region Constructor
         public Crawler() {
             OnPageInject = ThreadSafePageInject;
             OnCrawlRequest = ThreadSafeCrawlRequest;
@@ -79,9 +79,9 @@ namespace Blacksink.Blackboard
             this.CreateHandle();
             Application.DoEvents();
         }
-#endregion
+        #endregion
 
-#region Destructor :P
+        #region Destructor :P
         protected override void Dispose(bool disposing) {
             if (crawler != null) {
                 try {
@@ -93,9 +93,9 @@ namespace Blacksink.Blackboard
 
             base.Dispose(disposing);
         }
-#endregion
+        #endregion
 
-#region Private Event Handlers
+        #region Private Event Handlers
 
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
             //TODO: do something
@@ -128,9 +128,9 @@ namespace Blacksink.Blackboard
             safe_to_continue = true;
         }
 
-#endregion
+        #endregion
 
-#region Crawling Controllers
+        #region Crawling Controllers
         /// <summary>
         /// Begins a generic crawl after refreshing the username and password.
         /// If the username and pasword are empty, an exception is thrown.
@@ -241,9 +241,9 @@ namespace Blacksink.Blackboard
             emergency_stop = false;
         }
 
-#endregion
+        #endregion
 
-#region Inject Controllers
+        #region Inject Controllers
 
         /// <summary>
         /// Thread-safe JS injection
@@ -334,15 +334,15 @@ namespace Blacksink.Blackboard
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-#endregion
+        #endregion
 
-#region Special Consideration Files
+        #region Special Consideration Files
         private bool isSpecialConsideration(string url) {
             url = url.ToLower();
             return url.EndsWith(".pdf") || url.EndsWith(".png") || url.EndsWith(".jpeg") || url.EndsWith(".jpg")
                 || url.EndsWith(".m3p") || url.EndsWith(".mp3") || url.EndsWith(".mp4") || url.EndsWith(".wav")
                 || url.EndsWith(".flac") || url.EndsWith(".midi");
         }
-#endregion
+        #endregion
     }
 }

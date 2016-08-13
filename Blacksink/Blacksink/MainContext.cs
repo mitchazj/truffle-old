@@ -145,7 +145,7 @@ namespace Blacksink
             }
         }
 
-#region Overrides
+        #region Overrides
         protected override void ExitThreadCore() {
             main_icon.Visible = false;
             main_icon.Dispose();
@@ -154,9 +154,9 @@ namespace Blacksink
             tm_refresh.Dispose();
             base.ExitThreadCore();
         }
-#endregion
+        #endregion
 
-#region Refreshing
+        #region Refreshing
         private void tm_refresh_Tick(object sender, EventArgs e) {
             bool active = Properties.Settings.Default.is_setup;
             if (InternetConnectivity.checkInternet()) {
@@ -181,9 +181,9 @@ namespace Blacksink
                 Sync();
             }
         }
-#endregion
+        #endregion
 
-#region Other Voids
+        #region Other Voids
         /// <summary>
         /// Places the Black-Sink icon in the Windows Task Tray
         /// </summary>
@@ -230,9 +230,9 @@ namespace Blacksink
                 Console.WriteLine("Sync rejected due to unresolved issues. Scanner has not been started.");
             }
         }
-#endregion
+        #endregion
 
-#region Event Handlers
+        #region Event Handlers
         private void onQuitClicked(object sender, EventArgs e) {
             this.ExitThreadCore();
         }
@@ -258,6 +258,6 @@ namespace Blacksink
             frm.OnSetupFinished += setupCompleted;
             frm.Show();
         }
-#endregion
+        #endregion
     }
 }
