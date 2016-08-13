@@ -34,14 +34,27 @@
             <div id="minimize"></div>
         </div>-->
         <h1>Latest Updates</h1>
-        <button onclick="refreshDebugPage()">Refresh</button>
+        <button class="status-indicator" onclick="refreshDebugPage()">Up to date, last checked 2hrs 36mins ago.</button>
+
+        <div id="main-nav-panel">
+            <div class="flat-btn" id="truffle-community"><b>New!</b> Truffle<br/>Community</div>
+            <div class="flat-btn" id="virtual">Open<br/>QUT Virtual</div>
+            <div class="flat-btn" id="blackboard">Open<br/>QUT Blackboard</div>
+        </div>
+
         <div id="bottom-bar">
-            <div id="buttons">
+            <div class="buttons">
                 <div id="settings"><span><i class="fa fa-cog" aria-hidden="true"></i> Settings</span></div>
-                <div id="donate"><span><i class="fa fa-usd" aria-hidden="true"></i> Donate</span></div>
+                <div id="donate" class="light-btn"><span><i class="fa fa-usd" aria-hidden="true"></i> Donate</span></div>
             </div>
             <div id="bottom-main"></div>
-            <div id="right-buttons"></div>
+            <div class="buttons">
+                <div id="sync" class="light-btn"><span><i class="fa fa-refresh" aria-hidden="true"></i> Sync Now</span></div>
+                <div id="about">
+                    Truffle v0.9 beta
+                    Released Aug. 16
+                </div>
+            </div>
         </div>
     </div>
     <script>

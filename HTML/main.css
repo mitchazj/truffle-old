@@ -149,19 +149,16 @@ h1, h2, h3, h4 {
     height: 48px;
 }
 
-#buttons {
+.buttons {
     width: 250px;
     display: flex;
     color: rgba(255, 255, 255, .9);
-    /* box-shadow: -10px 0 5px -5px rgba(0, 0, 0, .1) inset; */
     height: 100%;
 }
-
-#buttons i {
+.buttons i {
     height: 1em;
 }
-
-#buttons div {
+.buttons div {
     cursor: pointer;
     width: 50%;
     display: flex;
@@ -169,21 +166,70 @@ h1, h2, h3, h4 {
     justify-content: center;
     transition: all 170ms ease;
     background-color: rgba(0, 0, 0, .1);
-} #buttons div:hover {
-    background-color: rgba(0, 0, 0, .2);
+} .buttons div:hover {
+    background-color: rgba(255, 255, 255, .01);
     color: #fff;
-} #buttons #donate {
+} .buttons .light-btn {
     background-color: rgba(255, 255, 255, .1);
-}  #buttons #donate:hover {
+}  .buttons .light-btn:hover {
     background-color: rgba(255, 255, 255, .2);
+} #about {
+    font-size: 13.33333px;
+    padding: 12px;
+    color: rgba(255, 255, 255, .6);
+} #about:hover {
+    color: rgba(255, 255, 255, .9);
 }
 
 #bottom-main {
     flex-grow: 1;
 }
 
-#right-buttons {
-    width: 250px;
-    height: 100%;
-    background-color: #006DB2;
+#main-nav-panel {
+    display: flex;
+    position: fixed;
+    bottom: 48px;
+    left: 250px;
+    right: 0;
+    margin: 0 10px;
+}
+
+.status-indicator {
+    font-size: 13.33333px;
+    padding: 3px 8px;
+    margin-top: 6px;
+    background-color: rgba(107, 212, 37, .5); /*rgba(86, 215, 43, .11);*/
+}
+
+.flat-btn {
+    flex-basis: 0%;
+    flex-grow: 1;
+    cursor: pointer;
+    padding: 12px 38px 12px 66px;
+    font-size: 14px;
+    margin: 15px;
+    color: rgba(0, 0, 0, .7);
+    background-image: url('img/open.png');
+    background-size: 36px;
+    background-repeat: no-repeat;
+    background-position: 16px center;
+}
+
+#truffle-community {
+    background-image: url('img/logo64.png');
+    background-color: rgba(0, 0, 0, .07);
+} #truffle-community:hover {
+    background-color: rgba(0, 0, 0, .12);
+}
+
+#virtual {
+    background-color: rgba(0, 0, 0, .07);
+} #virtual:hover {
+    background-color: rgba(0, 0, 0, .12);
+}
+
+#blackboard {
+    background-color: rgba(0, 0, 0, .07);
+} #blackboard:hover {
+    background-color: rgba(0, 0, 0, .12);
 }
