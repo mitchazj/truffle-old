@@ -1,10 +1,25 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<html>
 <head>
     <title>Truffle</title>
-	<meta charset="utf-8" />
+    <link rel="stylesheet" href="main.css"/>
 </head>
 <body>
-    This is awesome. It worked. asdglbfsuidgbudsiobgusdbiohfubsdbigh
+    <div id='left-nav'>
+        <div id="logo">
+            <img src="logo32.png" />
+            <h2>Truffle</h2>
+        </div>
+        <input id="search-box" type="text" placeholder="Search for units..."/>
+        <h3>My Units</h3>
+    </div>
+    <div id="main-workspace">
+        <h1>Latest Updates</h1>
+        <button onclick="refreshDebugPage()">Refresh</button>
+    </div>
+    <script>
+        function refreshDebugPage() {
+            location.reload();
+        }
+    </script>
 </body>
 </html>
