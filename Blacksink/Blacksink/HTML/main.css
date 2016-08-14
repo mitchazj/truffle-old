@@ -1,0 +1,248 @@
+*, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: #eee;
+    color: #282828;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 300;
+}
+
+#window-buttons {
+    position: fixed;
+    flex-direction: row;
+    right: 0;
+    top: 0;
+    z-index: 999;
+} #window-buttons div {
+    width: 32px;
+    height: 10px;
+    padding: 8px 0;
+    box-sizing: content-box;
+    display: inline-block;
+    float: right;
+    text-align: center;
+    transition: all 170ms ease;
+    opacity: .5;
+} #window-buttons div:before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    display: block;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+} #window-buttons #close:before {
+    background-image: url('img/close_b.png');
+}  #window-buttons #maximize:before {
+    background-image: url('img/max.png');
+}  #window-buttons #minimize:before {
+    background-image: url('img/min.png');
+} #window-buttons div:hover {
+    background-color: rgba(0, 0, 0, .15);
+    opacity: 1;
+} #window-buttons #close:hover {
+    background-color: #e04343;
+} #window-buttons #close:hover:before {
+    background-image: url('img/close_w.png');
+}
+
+#left-nav {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    padding: 15px;
+    padding-right: 20px;
+    box-shadow: -10px 0 5px -5px rgba(0, 0, 0, .1) inset;
+    background-color: #223843;
+    color: #fff;
+}
+
+#profile {
+    height: 32px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left center;
+} #profile img{
+    height: 32px;
+    width: 32px;
+    margin-right: 12px;
+} #profile h2 {
+    font-size: 18px;
+}
+
+#unit-list {
+    margin-bottom: 12px;
+    padding-top: 6px; 
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+} #unit-list a {
+    display: block;
+    padding: 8px 12px;
+    margin: 0 -5px;
+    background-color: rgba(0, 0, 0, .1);
+    font-size: 13.33333px;
+    text-decoration: none;
+    transition: all 170ms ease;
+    color: rgba(255, 255, 255, .6);
+} #unit-list a:hover {
+    background-color: rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, 1);
+} #unit-list a.active {
+    background-color: rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, .95);
+}  #unit-list a.active:hover {
+    background-color: rgba(255, 255, 255, .2);
+    color: rgba(255, 255, 255, 1);
+} #unit-list a.active:before {
+    content: "";
+    position: relative;
+    bottom: 1px;
+    display: inline-block;
+    margin-right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, .3);
+} #unit-list a.new:before {
+    background-color: #9BC995;
+}
+
+#search-box {
+    padding: 8px 12px;
+    margin: 0 -5px;
+    margin-bottom: 8px;
+    background-color: rgba(0, 0, 0, .1);
+    color: #fff;
+} ::-webkit-input-placeholder {
+   color: rgba(255, 255, 255, .75);
+}
+
+#left-nav h3 {
+    font-size: 13px;
+    padding: 5px 0;
+}
+
+#main-workspace {
+    flex-grow: 1;
+    background-color: #fff;
+    position: relative;
+    padding: 15px 25px;
+}
+
+#bottom-bar {
+    position: fixed;
+    display: flex;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #0079C6;
+    height: 48px;
+}
+
+.buttons {
+    width: 250px;
+    display: flex;
+    color: rgba(255, 255, 255, .9);
+    height: 100%;
+}
+.buttons i {
+    height: 1em;
+}
+.buttons div {
+    cursor: pointer;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 170ms ease;
+    background-color: rgba(0, 0, 0, .1);
+} .buttons div:hover {
+    background-color: rgba(255, 255, 255, .01);
+    color: #fff;
+} .buttons .light-btn {
+    background-color: rgba(255, 255, 255, .1);
+}  .buttons .light-btn:hover {
+    background-color: rgba(255, 255, 255, .2);
+} #about {
+    font-size: 13.33333px;
+    padding: 12px;
+    color: rgba(255, 255, 255, .6);
+} #about:hover {
+    color: rgba(255, 255, 255, .9);
+}
+
+#bottom-main {
+    flex-grow: 1;
+}
+
+#main-nav-panel {
+    display: flex;
+    position: fixed;
+    bottom: 48px;
+    left: 250px;
+    right: 0;
+    margin: 0 10px;
+}
+
+.updates {
+    margin: 6px 0;
+}
+.new-file {
+    font-size: 13.33333px;
+    color: #0079C6;
+    cursor: pointer;
+    padding: 3px 0;
+} .new-file:hover {
+    color: #006DB2;
+    text-decoration: underline;
+}
+
+.status-indicator {
+    font-size: 13.33333px;
+    padding: 3px 8px;
+    margin: 6px 0 12px;
+    background-color: rgba(107, 212, 37, .5); /*rgba(86, 215, 43, .11);*/
+}
+
+.flat-btn {
+    flex-basis: 0%;
+    flex-grow: 1;
+    cursor: pointer;
+    padding: 12px 38px 12px 66px;
+    font-size: 14px;
+    margin: 15px;
+    color: rgba(0, 0, 0, .7);
+    background-image: url('img/open.png');
+    background-size: 36px;
+    background-repeat: no-repeat;
+    background-position: 16px center;
+}
+
+#truffle-community {
+    background-image: url('img/logo64.png');
+    background-color: rgba(0, 0, 0, .07);
+} #truffle-community:hover {
+    background-color: rgba(0, 0, 0, .12);
+}
+
+#virtual {
+    background-color: rgba(0, 0, 0, .07);
+} #virtual:hover {
+    background-color: rgba(0, 0, 0, .12);
+}
+
+#blackboard {
+    background-color: rgba(0, 0, 0, .07);
+} #blackboard:hover {
+    background-color: rgba(0, 0, 0, .12);
+}

@@ -7,7 +7,7 @@ var config = {
 };
 firebase.initializeApp(config);
 
-truffleService.sendMessage("Hello from the other side!");
+bound.myMethod();
 
 //Connect
 //var database = firebase.database();

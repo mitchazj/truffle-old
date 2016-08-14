@@ -30,6 +30,10 @@ namespace Blacksink
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         private const string KeyName = "TruffleMITCH";
         bool isRunningOnLogin;
+
+        //Main GUI
+        private ServiceAdaptor serviceAdaptor = new ServiceAdaptor();
+        private frmMain mainGUI;
         #endregion
 
         /// <summary>
@@ -37,6 +41,10 @@ namespace Blacksink
         /// </summary>
         public MainContext() {
             setupIcon();
+
+            //Set up Main Gui
+            serviceAdaptor.MessageReceived += ServiceAdaptor_MessageReceived;
+            mainGUI = new frmMain(serviceAdaptor);
 
             if (!Properties.Settings.Default.is_setup) {
                 first_time = true; //To cache this - it's changed in the Setup form.
@@ -191,9 +199,10 @@ namespace Blacksink
             main_icon.Text = "Truffle";
             main_icon.Icon = icon.mug_ok;
             main_icon.ContextMenu = new ContextMenu();
+            main_icon.ContextMenu.MenuItems.Add("Open Truffle...", onMainGuiOpenClicked);
             main_icon.ContextMenu.MenuItems.Add("Open units in File Explorer...", onOpenUnitsClicked);
             main_icon.ContextMenu.MenuItems.Add("-");
-            main_icon.ContextMenu.MenuItems.Add("Setup wizard...", onSetupWizardClicked);
+            main_icon.ContextMenu.MenuItems.Add("Settings...", onSetupWizardClicked);
             main_icon.ContextMenu.MenuItems.Add("About...", onAboutClicked);
             main_icon.ContextMenu.MenuItems.Add("-");
             main_icon.ContextMenu.MenuItems.Add("Sync Now", onSyncNowClicked);
@@ -234,11 +243,15 @@ namespace Blacksink
 
         #region Event Handlers
         private void onQuitClicked(object sender, EventArgs e) {
+            mainGUI.PrepareShutdown();
             this.ExitThreadCore();
         }
         private void onAboutClicked(object sender, EventArgs e) {
             frmAbout frm = new frmAbout();
             frm.Show();
+        }
+        private void onMainGuiOpenClicked(object sender, EventArgs e) {
+            mainGUI.Show();
         }
         private void onOpenUnitsClicked(object sender, EventArgs e) {
             if (Properties.Settings.Default.StorageLocation != null && Properties.Settings.Default.StorageLocation != "" && Directory.Exists(Properties.Settings.Default.StorageLocation))
@@ -257,6 +270,12 @@ namespace Blacksink
             frmSetup frm = new frmSetup();
             frm.OnSetupFinished += setupCompleted;
             frm.Show();
+        }
+        #endregion
+
+        #region Connection with Main Gui
+        private void ServiceAdaptor_MessageReceived(object sender, ServiceAdaptorEventArgs e) {
+            MessageBox.Show(e.Message);
         }
         #endregion
     }

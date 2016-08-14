@@ -35,7 +35,7 @@
             this.pnDock.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnDock.Location = new System.Drawing.Point(0, 0);
             this.pnDock.Name = "pnDock";
-            this.pnDock.Size = new System.Drawing.Size(1021, 28);
+            this.pnDock.Size = new System.Drawing.Size(1110, 28);
             this.pnDock.TabIndex = 0;
             this.pnDock.Visible = false;
             // 
@@ -44,14 +44,14 @@
             this.pnMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnMain.Location = new System.Drawing.Point(0, 28);
             this.pnMain.Name = "pnMain";
-            this.pnMain.Size = new System.Drawing.Size(1021, 712);
+            this.pnMain.Size = new System.Drawing.Size(1110, 712);
             this.pnMain.TabIndex = 1;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1021, 740);
+            this.ClientSize = new System.Drawing.Size(1110, 740);
             this.Controls.Add(this.pnMain);
             this.Controls.Add(this.pnDock);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

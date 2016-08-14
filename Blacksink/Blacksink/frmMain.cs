@@ -13,18 +13,29 @@ namespace Blacksink
 {
     public partial class frmMain : Form {
         private ChromiumWebBrowser main_GUI;
+        private bool shutdown = false;
 
         public frmMain() {
             InitializeComponent();
-            main_GUI = new ChromiumWebBrowser("http://localhost:61210/");
-            main_GUI.MouseDown += Main_GUI_MouseDown;
+            main_GUI = new ChromiumWebBrowser(Application.StartupPath + "\\HTML\\testing.html");
             pnMain.Controls.Add(main_GUI);
         }
 
-        private void Main_GUI_MouseDown(object sender, MouseEventArgs e) {
-            if (e.Location.Y < 45) {
-                MessageBox.Show("Test Successful");
-            }
+        public frmMain(ServiceAdaptor adaptor) {
+            InitializeComponent();
+            main_GUI = new ChromiumWebBrowser(Application.StartupPath + "\\HTML\\testing.html");
+            main_GUI.RegisterJsObject("truffleService", adaptor);
+            pnMain.Controls.Add(main_GUI);
+        }
+
+        public void PrepareShutdown() {
+            shutdown = true;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e) {
+            e.Cancel = !shutdown;
+            this.Hide();
+            base.OnFormClosing(e);
         }
     }
 }
