@@ -42,10 +42,6 @@ namespace Blacksink
         public MainContext() {
             setupIcon();
 
-            //Set up Main Gui
-            serviceAdaptor.MessageReceived += ServiceAdaptor_MessageReceived;
-            mainGUI = new frmMain(serviceAdaptor);
-
             if (!Properties.Settings.Default.is_setup) {
                 first_time = true; //To cache this - it's changed in the Setup form.
                 frmSetup frm = new frmSetup();
@@ -79,6 +75,10 @@ namespace Blacksink
             } catch {
                 GlobalVariables.Units = new List<Unit>();
             }
+
+            //Set up Main GUI
+            serviceAdaptor.MessageReceived += ServiceAdaptor_MessageReceived;
+            mainGUI = new frmMain(serviceAdaptor);
 
             crawler.OnSyncCompleted += Crawler_OnSyncCompleted;
             crawler.OnLoginProblem += Crawler_OnLoginProblem;
@@ -244,6 +244,9 @@ namespace Blacksink
         #region Event Handlers
         private void onQuitClicked(object sender, EventArgs e) {
             mainGUI.PrepareShutdown();
+            mainGUI.Close();
+            mainGUI.Dispose();
+            Application.DoEvents();
             this.ExitThreadCore();
         }
         private void onAboutClicked(object sender, EventArgs e) {

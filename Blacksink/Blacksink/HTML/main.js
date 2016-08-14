@@ -7,7 +7,10 @@ var config = {
 };
 firebase.initializeApp(config);
 
-bound.myMethod();
+truffleService.sendMessage("awesome!");
+$('#student-number').text("Sweet");
+$('#student-number').text(truffleService.getUnitCount);
+truffleService.sendMessage("Yeah!");
 
 //Connect
 //var database = firebase.database();

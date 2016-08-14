@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blacksink.Blackboard;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,13 @@ namespace Blacksink
         public delegate void SendMessage(object sender, ServiceAdaptorEventArgs e);
         public event SendMessage MessageReceived;
 
-        public void testConnection(string message) {
+        public void sendMessage(string message) {
             if (MessageReceived != null)
                 MessageReceived(this, new ServiceAdaptorEventArgs(message));
+        }
+
+        public int getUnitCount{
+            get { return GlobalVariables.Units.Count; }
         }
     }
 

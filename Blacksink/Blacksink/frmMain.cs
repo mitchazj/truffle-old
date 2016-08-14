@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp;
 using CefSharp.WinForms;
 
 namespace Blacksink
@@ -24,6 +25,7 @@ namespace Blacksink
         public frmMain(ServiceAdaptor adaptor) {
             InitializeComponent();
             main_GUI = new ChromiumWebBrowser(Application.StartupPath + "\\HTML\\testing.html");
+            main_GUI.BrowserSettings.ApplicationCache = CefState.Disabled;
             main_GUI.RegisterJsObject("truffleService", adaptor);
             pnMain.Controls.Add(main_GUI);
         }
