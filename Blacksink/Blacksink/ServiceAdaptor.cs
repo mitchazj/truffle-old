@@ -13,8 +13,10 @@ namespace Blacksink
         public event SendMessage MessageReceived;
 
         public void sendMessage(string message) {
+            //GlobalVariables.messages_from_main_GUI.Add((string)message.Clone());
+            //Application.DoEvents();
             if (MessageReceived != null)
-                MessageReceived(this, new ServiceAdaptorEventArgs(message));
+                MessageReceived(new object(), new ServiceAdaptorEventArgs(message));
         }
 
         public int getUnitCount{

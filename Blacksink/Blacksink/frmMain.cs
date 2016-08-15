@@ -18,10 +18,15 @@ namespace Blacksink
 
         public frmMain() {
             InitializeComponent();
+            //For testing purposes.
             main_GUI = new ChromiumWebBrowser(Application.StartupPath + "\\HTML\\testing.html");
             pnMain.Controls.Add(main_GUI);
         }
 
+        /// <summary>
+        /// The main constructor for this class
+        /// </summary>
+        /// <param name="adaptor"></param>
         public frmMain(ServiceAdaptor adaptor) {
             InitializeComponent();
             main_GUI = new ChromiumWebBrowser(Application.StartupPath + "\\HTML\\testing.html");

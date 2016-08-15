@@ -12,6 +12,8 @@ using CefSharp.OffScreen;
 using CefSharp;
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Blacksink
 {
@@ -42,7 +44,8 @@ namespace Blacksink
 
         public frmSetup() {
             InitializeComponent();
-            b_login = new ChromiumWebBrowser(URL);
+            //b_login = new ChromiumWebBrowser(URL);
+            b_login = new ChromiumWebBrowser("local");
             b_login.FrameLoadEnd += B_login_FrameLoadEnd;
             OnAct = Act;
             connectionTimeout.Tick += ConnectionTimeout_Tick;
@@ -204,13 +207,14 @@ namespace Blacksink
         }
 
         private void Login() {
-            js_inject = Script.getScript(textBox1.Text, textBox2.Text);
-            StartTimeout();
-            Console.WriteLine("Login called");
-            if (page_loaded) {
-                Application.DoEvents();
-                Inject();
-            }
+            new Thread(() => {
+                js_inject = Script.getScript(textBox1.Text, textBox2.Text);
+                StartTimeout();
+                Console.WriteLine("Login called");
+                if (page_loaded) {
+                    Inject();
+                }
+            }).Start();
         }
 
         private void B_login_FrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {

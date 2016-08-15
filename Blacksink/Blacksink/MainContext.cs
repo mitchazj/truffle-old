@@ -7,7 +7,10 @@ using System.Windows.Forms;
 using Blacksink.Blackboard;
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading;
+using CefSharp.OffScreen;
 using Microsoft.Win32;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Blacksink
 {
@@ -25,6 +28,10 @@ namespace Blacksink
         bool connectivity_issues = false;
         bool login_issues = false;
         bool first_time = false;
+
+        //Really ugly workaround for stuff
+        private List<string> messages_from_main_GUI = new List<string>();
+        private Timer workaroundTimer = new Timer() {Interval = 60};
 
         //Registry stuff for auto-starting
         private const string RegistryPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -78,6 +85,8 @@ namespace Blacksink
 
             //Set up Main GUI
             serviceAdaptor.MessageReceived += ServiceAdaptor_MessageReceived;
+            workaroundTimer.Tick += WorkaroundTimer_Tick;
+            workaroundTimer.Start();
             mainGUI = new frmMain(serviceAdaptor);
 
             crawler.OnSyncCompleted += Crawler_OnSyncCompleted;
@@ -89,6 +98,16 @@ namespace Blacksink
             tm_refresh.Tick += tm_refresh_Tick;
             //tm_refresh_Tick(tm_refresh, new EventArgs()); //Fire the first event
             tm_refresh.Start();
+        }
+
+        private void WorkaroundTimer_Tick(object sender, EventArgs e) {
+            while (messages_from_main_GUI.Count > 0) {
+                string message = messages_from_main_GUI[0];
+                if (message == "Open Settings") {
+                    onSetupWizardClicked(sender, e);
+                }
+                messages_from_main_GUI.RemoveAt(0);
+            }
         }
 
         private void setupCompleted(object sender, EventArgs e) {
@@ -103,6 +122,14 @@ namespace Blacksink
             }
         }
 
+        #region Connection with Main Gui
+        private void ServiceAdaptor_MessageReceived(object sender, ServiceAdaptorEventArgs e) {
+            if (!messages_from_main_GUI.Contains(e.Message))
+                messages_from_main_GUI.Add(e.Message);
+        }
+        #endregion
+
+        #region Cralwer Events
         private void Crawler_OnSyncCompleted(object sender, EventArgs e) {
             Console.WriteLine("[Received] Sync Completed");
             if (!login_issues && !connectivity_issues) {
@@ -152,6 +179,7 @@ namespace Blacksink
                 Application.DoEvents();
             }
         }
+        #endregion
 
         #region Overrides
         protected override void ExitThreadCore() {
@@ -273,12 +301,6 @@ namespace Blacksink
             frmSetup frm = new frmSetup();
             frm.OnSetupFinished += setupCompleted;
             frm.Show();
-        }
-        #endregion
-
-        #region Connection with Main Gui
-        private void ServiceAdaptor_MessageReceived(object sender, ServiceAdaptorEventArgs e) {
-            MessageBox.Show(e.Message);
         }
         #endregion
     }
